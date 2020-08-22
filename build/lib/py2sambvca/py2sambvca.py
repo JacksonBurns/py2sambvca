@@ -2,6 +2,26 @@ import subprocess, re, glob, os
 
 
 class py2sambvca():
+    """
+    Wrapper class for py2sambvca functions.
+
+    Call this class to instantiate a py2sambvca object, which has methods to write input, call SambVca,
+    and retreieve output.
+
+    Parameters:
+    xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
+    sphere_center_atom_ids (list): ID of atoms defining the sphere center 
+    z_ax_atom_ids (list): ID of atoms for z-axis 
+    xz_plane_atoms_ids (list): ID of atoms for xz-plane
+    atoms_to_delete_ids (list): ID of atoms to be deleted (default None)
+    sphere_radius (float): Sphere radius in Angstrom (default 3.5)
+    displacement (float): Displacement of oriented molecule from sphere center in Angstrom (default 0.0)
+    mesh_size (float): Mesh size for numerical integration (default 0.10)
+    remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1) 
+    orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
+    write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
+    path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
+    """
     def __init__(self,
                 xyz_filepath,
                 sphere_center_atom_ids,
@@ -14,12 +34,15 @@ class py2sambvca():
                 remove_H=1,
                 orient_z=1,
                 write_surf_files=1,
-                path_to_sambvcax="/home/jackson/Desktop/Sambvca21/sambvca.x"):
+                path_to_sambvcax="/path/to/executable/sambvca.x"):
+        """
+        See docstring for py2sambvca
+        """
         # if atoms are requested to be deleted, assign them and the number of them
         if atoms_to_delete_ids is not None:
             self.n_atoms_to_delete = len(atoms_to_delete_ids)
             self.atoms_to_delete_ids = atoms_to_delete_ids
-        else:  # otherwise, set to none to avoid bnad writes in the future
+        else:  # otherwise, set to none to avoid bad writes in the future
             self.n_atoms_to_delete = None
             self.atoms_to_delete_ids = None
         # various other parameters
@@ -43,7 +66,8 @@ class py2sambvca():
 
     def write_input(self):
         """
-        wrapper to write inputs for the Sambvca buried-volume fortran calculator
+        Write input for the Sambvca buried-volume Fortran calculator based on the data entered
+        when object was initialized.
 
         """
         # make file in the same cwd, which is where sambvca will look
@@ -79,7 +103,9 @@ class py2sambvca():
 
     def calc(self):
         """
-        calls sambvca
+        Call SambVca based on the executable path given on initiliazation of py2sambvca.
+
+        Be sure to write_input() before calling this function.
 
         """
         try:
@@ -94,7 +120,8 @@ class py2sambvca():
 
     def get_buried_vol(self):
         """
-        retrieves the buried volume from a sambvca output file or False if it cannot find it
+        Retrieves the buried volume from a SambVca output file in the current working directory
+        or False if it cannot find it.
 
         """
         # open the file, read data
@@ -110,7 +137,7 @@ class py2sambvca():
 
     def clean_files(self):
         """
-        remove all input and output files associated with py2sambvca
+        Remove all input and output files associated with py2sambvca.
 
         """
         [os.remove(i) for i in glob.glob("py2sambvca_input*")]

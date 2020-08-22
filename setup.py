@@ -21,6 +21,5 @@ setup(
         "Programming Language :: Python :: 3"
     ],
     packages=["py2sambvca"],
-    include_package_data=True,
-    install_requires=["subprocess", "re", "glob", "os"],
+    include_package_data=True
 )
