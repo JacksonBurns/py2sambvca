@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: py2sambvca
+Version: 1.0.0
+Summary: Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.
+Home-page: https://github.com/JacksonBurns/py2sambvca
+Author: Jackson Burns
+License: GNU GPLv3
+Description: # py2sambvca
+         Simple thin client to interface python scripts with SambVca catalytic pocket fortran calculator.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/markdown

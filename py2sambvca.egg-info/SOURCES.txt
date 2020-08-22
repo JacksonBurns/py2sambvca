@@ -1,0 +1,10 @@
+README.md
+setup.py
+py2sambvca/__init__.py
+py2sambvca/__main__.py
+py2sambvca/py2sambvca.py
+py2sambvca.egg-info/PKG-INFO
+py2sambvca.egg-info/SOURCES.txt
+py2sambvca.egg-info/dependency_links.txt
+py2sambvca.egg-info/requires.txt
+py2sambvca.egg-info/top_level.txt
