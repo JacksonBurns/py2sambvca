@@ -1,4 +1,9 @@
 # py2sambvca
+![GitHub Repo stars](https://img.shields.io/github/stars/JacksonBurns/py2sambvca?style=social)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/py2sambvca)
+![PyPI](https://img.shields.io/pypi/v/py2sambvca)
+![PyPI - License](https://img.shields.io/pypi/l/py2sambvca)
+
  Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.
 
 ## Installation
