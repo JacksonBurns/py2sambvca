@@ -184,11 +184,17 @@ class py2sambvca():
         iterlines = iter(lines)
         for line in iterlines:
             if "V Free    V Buried   V Total   V Exact" in line:
-                v_free, v_buried, v_total, v_exact = read_floats(next(iterlines))
+                try:
+                    v_free, v_buried, v_total, v_exact = read_floats(next(iterlines))
+                except:
+                    pass
             if "%V Free   %V Buried  % V Tot/V Ex" in line:
-                percent_free, percent_buried, percent_total = read_floats(
-                    next(iterlines)
-                )
+                try:
+                    percent_free, percent_buried, percent_total = read_floats(
+                        next(iterlines)
+                    )
+                except:
+                    pass
             if "Quadrants analysis" in line:
                 quadrants = read_quad_oct(iterlines)
             if "Octants analysis" in line:
