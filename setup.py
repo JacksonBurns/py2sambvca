@@ -10,7 +10,7 @@ README = (cwd / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="py2sambvca",
-    version="1.0.0",
+    version="1.1.0",
     description="Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.",
     long_description=README,
     long_description_content_type="text/markdown",
