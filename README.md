@@ -28,6 +28,10 @@ ligand_4_buried_volume = buried_vol.get_buried_vol()
 # clean up input and output files
 buried_vol.clean_files()
 ```
+### Examples
+Here are a couple repositories using `py2sambvca` as a Python package or extending its source code, check them out:
+ - [Metal-organic framework stability analysis by Hiu Ki](https://github.com/hiukiwong/mof-stability-ml)
+ - [Phosphine ligand parameterization for Machine Learning by Kjell Jorner](https://github.com/kjelljorner/morfeus)
 
 ## License
 `py2sambvca` is available under the GNU GPLv3 in accordance with the base Fortran code which is available under the same license and can be retreieved here: https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html
