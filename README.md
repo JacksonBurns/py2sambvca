@@ -15,8 +15,7 @@ pip install py2sambvca
 ## Usage
 After installation, `py2sambvca` can be added to a Python script via `import` and instantiated:
 ```python
-# import the class and give it a simpler alias
-from py2sambvca.py2sambvca import py2sambvca as p2s
+from py2sambvca import p2s
 
 buried_vol = p2s(r'myxyzfiles\ligand_4.xyz',...)
 buried_vol.write_input()

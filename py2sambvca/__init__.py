@@ -1,1 +1,3 @@
-__version__ = "1.1.0"
+from .py2sambvca import py2sambvca as p2s
+
+__version__ = "1.1.1"
