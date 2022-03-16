@@ -86,6 +86,11 @@ class py2sambvca():
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
 
+        # make results accesible from object directly
+        self.total_results = None
+        self.quadrant_results = None
+        self.octant_results = None
+
     def write_input(self):
         """
         Write input for the Sambvca buried-volume Fortran calculator based on the data entered
@@ -148,7 +153,6 @@ class py2sambvca():
         """
         Retrieves the buried volume from a SambVca output file in the current working directory
         or False if it cannot find it.
-
         """
         # open the file, read data
         with open("py2sambvca_input.out", 'r') as file:
@@ -178,11 +182,13 @@ class py2sambvca():
             octant_results (dict): Octant-decomposed results
         """
         def read_floats(line):
+            # TODO: Change to private, non-nested
             """Read line with floating point numbers."""
             split_line = line.strip().split()
             return [float(i) for i in split_line]
 
         def read_quad_oct(iterlines):
+            # TODO: Change to private, non-nested
             """Read quadrant/octant results."""
             results = {
                 "free_volume": {},
@@ -242,6 +248,53 @@ class py2sambvca():
         octant_results = octants
 
         return total_results, quadrant_results, octant_results
+
+    def get_topology(self):
+        """Call get with the key.
+        """
+        pass
+
+    def get_quadrants(self):
+        pass
+
+    def get_octants(self):
+        pass
+
+    def get_free_volume(self):
+        pass
+
+    def get_buried_volume(self):
+        return self.get("buried_volume")
+
+    def get_exact_volume(self):
+        pass
+
+    def get_total_volume(self):
+        pass
+
+    def get_percent_buried_volume(self):
+        pass
+
+    def get_percent_free_volume(self):
+        pass
+
+    def get_percent_total_volume(self):
+        pass
+
+    def get_regex(self):
+        pass
+
+    def get(self, key):
+        """
+        Accept a key in the output of parse results, return it.
+        """
+        return self.total_results[key]
+
+    def run(self):
+        self.write_input()
+        self.calc()
+        self.parse_output()
+        self.clean_files()
 
 
 radii_table = [
