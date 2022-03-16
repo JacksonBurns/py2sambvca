@@ -18,7 +18,7 @@ jobs:
           python -m pip install coverage
       - name: Compile Sambvca21
         run: |
-          gfortran -o sambvca21.exe test/sambvca21.f
+          gfortran -o sambvca21.x test/sambvca21.f
       - name: Run Tests
         run: |
           coverage run --source=. --omit=py2sambvca/__init__.py,setup.py,test/* -m unittest discover
