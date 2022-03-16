@@ -1,4 +1,7 @@
-import subprocess, re, glob, os
+import subprocess
+import re
+import glob
+import os
 from itertools import islice
 
 
@@ -23,21 +26,39 @@ class py2sambvca():
     write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
     """
+
     def __init__(self,
-                xyz_filepath,
-                sphere_center_atom_ids,
-                z_ax_atom_ids,
-                xz_plane_atoms_ids,
-                atoms_to_delete_ids=None,
-                sphere_radius=3.5,
-                displacement=0.0,
-                mesh_size=0.10,
-                remove_H=1,
-                orient_z=1,
-                write_surf_files=1,
-                path_to_sambvcax="/path/to/executable/sambvca.x"):
+                 xyz_filepath,
+                 sphere_center_atom_ids,
+                 z_ax_atom_ids,
+                 xz_plane_atoms_ids,
+                 atoms_to_delete_ids=None,
+                 sphere_radius=3.5,
+                 displacement=0.0,
+                 mesh_size=0.10,
+                 remove_H=1,
+                 orient_z=1,
+                 write_surf_files=1,
+                 path_to_sambvcax="/path/to/executable/sambvca.x"):
         """
-        See docstring for py2sambvca
+        Wrapper class for py2sambvca functions.
+
+        Call this class to instantiate a py2sambvca object, which has methods to write input, call SambVca,
+        and retreieve output.
+
+        Parameters:
+        xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
+        sphere_center_atom_ids (list): ID of atoms defining the sphere center 
+        z_ax_atom_ids (list): ID of atoms for z-axis 
+        xz_plane_atoms_ids (list): ID of atoms for xz-plane
+        atoms_to_delete_ids (list): ID of atoms to be deleted (default None)
+        sphere_radius (float): Sphere radius in Angstrom (default 3.5)
+        displacement (float): Displacement of oriented molecule from sphere center in Angstrom (default 0.0)
+        mesh_size (float): Mesh size for numerical integration (default 0.10)
+        remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1) 
+        orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
+        write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
+        path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
         """
         # if atoms are requested to be deleted, assign them and the number of them
         if atoms_to_delete_ids is not None:
@@ -77,18 +98,22 @@ class py2sambvca():
             if self.atoms_to_delete_ids is not None:
                 file.writelines([
                     str(self.n_atoms_to_delete) + "\n",
-                    str(self.atoms_to_delete_ids).replace(",","").replace("[", "").replace("]", "") + "\n"
-                    ])
+                    str(self.atoms_to_delete_ids).replace(
+                        ",", "").replace("[", "").replace("]", "") + "\n"
+                ])
             else:
                 file.write("0\n")
             # write user settings
             file.writelines([
                 str(self.n_sphere_center_atoms) + "\n",
-                str(self.sphere_center_atom_ids).replace(",", "").replace("[", "").replace("]", "") + "\n",
+                str(self.sphere_center_atom_ids).replace(
+                    ",", "").replace("[", "").replace("]", "") + "\n",
                 str(self.n_z_atoms) + "\n",
-                str(self.z_ax_atom_ids).replace(",", "").replace("[", "").replace("]", "") + "\n",
+                str(self.z_ax_atom_ids).replace(",", "").replace(
+                    "[", "").replace("]", "") + "\n",
                 str(self.n_xz_plane_atoms) + "\n",
-                str(self.xz_plane_atoms_ids).replace(",", "").replace("[", "").replace("]", "") + "\n",
+                str(self.xz_plane_atoms_ids).replace(
+                    ",", "").replace("[", "").replace("]", "") + "\n",
                 str(self.sphere_radius) + "\n",
                 str(self.displacement) + "\n",
                 str(self.mesh_size) + "\n",
@@ -96,7 +121,7 @@ class py2sambvca():
                 str(self.orient_z) + "\n",
                 str(self.write_surf_files) + "\n",
                 "103\n"
-                ])
+            ])
             # write radii
             file.writelines(radii_table)
             # write the atom coordinates
@@ -113,7 +138,7 @@ class py2sambvca():
             subprocess.run(
                 [self.path_to_sambvcax, "py2sambvca_input"],
                 stderr=subprocess.DEVNULL
-                )
+            )
             return True
         except Exception as e:
             print(e)
@@ -128,12 +153,13 @@ class py2sambvca():
         # open the file, read data
         with open("py2sambvca_input.out", 'r') as file:
             file_data = file.readlines()
-        pattern = re.compile(r"    The %V Bur of the molecule is:     (\d*\.\d*)")
+        pattern = re.compile(
+            r"    The %V Bur of the molecule is:     (\d*\.\d*)")
         for line in file_data:
             m = pattern.search(line)
             if m:
                 return m[1]
-                
+
         return False
 
     def clean_files(self):
@@ -142,10 +168,10 @@ class py2sambvca():
 
         """
         [os.remove(i) for i in glob.glob("py2sambvca_input*")]
-    
+
     def parse_output(self):
         """Parse output file for total, quandrant and octant results.
-        
+
         Returns:
             total_results (dict): Results for total 
             quadrant_results (dict): Quadrant-decomposed results
@@ -154,7 +180,8 @@ class py2sambvca():
         def read_floats(line):
             """Read line with floating point numbers."""
             split_line = line.strip().split()
-            return [float(i) for i in split_line]        
+            return [float(i) for i in split_line]
+
         def read_quad_oct(iterlines):
             """Read quadrant/octant results."""
             results = {
@@ -185,7 +212,8 @@ class py2sambvca():
         for line in iterlines:
             if "V Free    V Buried   V Total   V Exact" in line:
                 try:
-                    v_free, v_buried, v_total, v_exact = read_floats(next(iterlines))
+                    v_free, v_buried, v_total, v_exact = read_floats(
+                        next(iterlines))
                 except:
                     pass
             if "%V Free   %V Buried  % V Tot/V Ex" in line:
@@ -208,12 +236,13 @@ class py2sambvca():
             "exact_volume": v_exact,
             "percent_buried_volume": percent_buried,
             "percent_free_volume": percent_free,
-            "percent_total_volume": percent_total,          
+            "percent_total_volume": percent_total,
         }
         quadrant_results = quadrants
         octant_results = octants
 
         return total_results, quadrant_results, octant_results
+
 
 radii_table = [
     'H       1.28\n',
