@@ -168,7 +168,7 @@ class py2sambvca():
         for line in file_data:
             m = pattern.search(line)
             if m:
-                return m[1]
+                return float(m[1])
 
         return False
 
@@ -300,8 +300,9 @@ class py2sambvca():
     def run(self):
         self.write_input()
         self.calc()
-        self.parse_output()
+        total_results, quadrant_results, octant_results = self.parse_output()
         self.clean_files()
+        return total_results, quadrant_results, octant_results
 
 
 radii_table = [
