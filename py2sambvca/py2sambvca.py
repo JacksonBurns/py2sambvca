@@ -25,6 +25,7 @@ class py2sambvca():
     orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
     write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
+    verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
 
     def __init__(self,
@@ -39,7 +40,8 @@ class py2sambvca():
                  remove_H=1,
                  orient_z=1,
                  write_surf_files=1,
-                 path_to_sambvcax="/path/to/executable/sambvca.x"):
+                 path_to_sambvcax="/path/to/executable/sambvca.x",
+                 verbose=1):
         """
         Wrapper class for py2sambvca functions.
 
@@ -59,6 +61,7 @@ class py2sambvca():
         orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
         write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
+        verbose (int): 0 for no output, 1 for some output, 2 for the most output
         """
         # if atoms are requested to be deleted, assign them and the number of them
         if atoms_to_delete_ids is not None:
@@ -85,6 +88,7 @@ class py2sambvca():
             self.xyz_data = file.readlines()
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
+        self.verbose = verbose
 
         # make results accesible from object directly
         self.total_results = None
@@ -140,13 +144,15 @@ class py2sambvca():
 
         """
         try:
-            subprocess.run(
+            result = subprocess.run(
                 [self.path_to_sambvcax, "py2sambvca_input"],
                 stderr=subprocess.DEVNULL
             )
+            result.check_returncode()
             return True
-        except Exception as e:
-            print(e)
+        except subprocess.CalledProcessError as e:
+            if self.verbose:
+                print(e)
             return False
 
     def get_buried_vol(self):
@@ -254,7 +260,7 @@ class py2sambvca():
         """
         pass
 
-    def get_quadrants(self):
+    def get_quadrants_result(self):
         pass
 
     def get_octants(self):
@@ -284,11 +290,12 @@ class py2sambvca():
     def get_regex(self):
         pass
 
-    def get(self, key):
+    def get(self, key, quadrant=False, octant=False):
         """
         Accept a key in the output of parse results, return it.
         """
-        return self.total_results[key]
+        if not octant or quadrant:
+            return self.total_results[key]
 
     def run(self):
         self.write_input()
