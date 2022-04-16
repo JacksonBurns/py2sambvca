@@ -1,4 +1,4 @@
-name: Run Unix Tests
+name: Run Windows Tests
 on:
   push:
     branches: [ main ]
