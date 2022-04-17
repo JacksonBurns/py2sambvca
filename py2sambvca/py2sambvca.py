@@ -2,7 +2,6 @@ import subprocess
 import re
 import glob
 import os
-from itertools import islice
 
 
 class py2sambvca():
