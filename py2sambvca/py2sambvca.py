@@ -214,28 +214,24 @@ class py2sambvca():
         # Iterate over lines and read data
         iterlines = iter(lines)
         for line in iterlines:
-            if "V Free    V Buried   V Total   V Exact" in line:
-                try:
-                    v_free, v_buried, v_total, v_exact = read_floats(
-                        next(iterlines))
-                    pass
-                except:
-                    pass
-            if "%V Free   %V Buried  % V Tot/V Ex" in line:
-                try:
-                    percent_free, percent_buried, percent_total = read_floats(
-                        next(iterlines)
-                    )
-                except:
-                    pass
             if "Quadrants analysis" in line:
                 quadrants = read_quad_oct(iterlines)
             if "Octants analysis" in line:
                 octants = read_quad_oct(iterlines)
-        # v_free
-        # v_buried
-        # v_total
-        # v_exact
+
+        m = self.get_regex(
+            r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+        v_free = float(m[1])
+        v_buried = float(m[2])
+        v_total = float(m[3])
+        v_exact = float(m[4])
+
+        m = self.get_regex(
+            r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+        percent_free = float(m[1])
+        percent_buried = float(m[2])
+        percent_total = float(m[3])
+
         # Create results dictionaries
         total_results = {
             "free_volume": v_free,
