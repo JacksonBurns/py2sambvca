@@ -172,78 +172,75 @@ class py2sambvca():
         [os.remove(i) for i in glob.glob("py2sambvca_input*")]
 
     def parse_output(self):
-        """Parse output file for total, quandrant and octant results.
+        """Parse output file for total, quandrant, and octant results.
 
         Returns:
             total_results (dict): Results for total
             quadrant_results (dict): Quadrant-decomposed results
             octant_results (dict): Octant-decomposed results
         """
-        def read_floats(line):
-            # TODO: Change to private, non-nested
-            """Read line with floating point numbers."""
-            split_line = line.strip().split()
-            return [float(i) for i in split_line]
-
-        def read_quad_oct(iterlines):
-            # TODO: Change to private, non-nested
-            """Read quadrant/octant results."""
-            results = {
-                "free_volume": {},
-                "buried_volume": {},
-                "total_volume": {},
-                "percent_free_volume": {},
-                "percent_buried_volume": {},
-            }
-            for line in islice(iterlines, 1, None):
-                if line.strip() == "":
-                    break
-                strip_line = line.strip().split()
-                label = strip_line[0]
-                results["free_volume"][label] = float(strip_line[1])
-                results["buried_volume"][label] = float(strip_line[2])
-                results["total_volume"][label] = float(strip_line[3])
-                results["percent_free_volume"][label] = float(strip_line[4])
-                results["percent_buried_volume"][label] = float(strip_line[5])
-            return results
-
-        # Open file and read lines
-        with open("py2sambvca_input.out") as f:
-            lines = f.readlines()
-
-        # Iterate over lines and read data
-        iterlines = iter(lines)
-        for line in iterlines:
-            if "Quadrants analysis" in line:
-                quadrants = read_quad_oct(iterlines)
-            if "Octants analysis" in line:
-                octants = read_quad_oct(iterlines)
-
-        m = self.get_regex(
+        # total results
+        m1 = self.get_regex(
             r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
-        v_free = float(m[1])
-        v_buried = float(m[2])
-        v_total = float(m[3])
-        v_exact = float(m[4])
 
-        m = self.get_regex(
+        m2 = self.get_regex(
             r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
-        percent_free = float(m[1])
-        percent_buried = float(m[2])
-        percent_total = float(m[3])
 
-        # Create results dictionaries
         total_results = {
-            "free_volume": v_free,
-            "buried_volume": v_buried,
-            "total_volume": v_total,
-            "exact_volume": v_exact,
-            "percent_buried_volume": percent_buried,
-            "percent_free_volume": percent_free,
-            "percent_total_volume": percent_total,
+            "free_volume": float(m1[1]),
+            "buried_volume": float(m1[2]),
+            "total_volume": float(m1[3]),
+            "exact_volume": float(m1[4]),
+            "percent_buried_volume": float(m2[2]),
+            "percent_free_volume": float(m2[1]),
+            "percent_total_volume": float(m2[3]),
         }
-        quadrant_results = quadrants
-        octant_results = octants
+
+        # quadrant results
+        regions = ["SW", "NW", "NE", "SE"]
+        quadrant_results = {
+            "free_volume": {},
+            "buried_volume": {},
+            "total_volume": {},
+            "percent_free_volume": {},
+            "percent_buried_volume": {},
+        }
+        for region in regions:
+            m = self.get_regex(
+                r"^ " + region +
+                "\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
+            )
+            quadrant_results["free_volume"][region] = float(m[1])
+            quadrant_results["buried_volume"][region] = float(m[2])
+            quadrant_results["total_volume"][region] = float(m[3])
+            quadrant_results["percent_free_volume"][region] = float(m[4])
+            quadrant_results["percent_buried_volume"][region] = float(m[5])
+
+        # octant results
+        regions = [r"SW\-z", r"NW\-z", r"NE\-z", r"SE\-z",
+                   r"SW\+z", r"NW\+z", r"NE\+z", r"SE\+z"]
+        octant_results = {
+            "free_volume": {},
+            "buried_volume": {},
+            "total_volume": {},
+            "percent_free_volume": {},
+            "percent_buried_volume": {},
+        }
+        for region in regions:
+            m = self.get_regex(
+                r"^ " + region +
+                "\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
+            )
+            octant_results["free_volume"][
+                region.replace("\\", "")] = float(m[1])
+            octant_results["buried_volume"][
+                region.replace("\\", "")] = float(m[2])
+            octant_results["total_volume"][
+                region.replace("\\", "")] = float(m[3])
+            octant_results["percent_free_volume"][
+                region.replace("\\", "")] = float(m[4])
+            octant_results["percent_buried_volume"][
+                region.replace("\\", "")] = float(m[5])
 
         self.total_results = total_results
         self.quadrant_results = quadrant_results
