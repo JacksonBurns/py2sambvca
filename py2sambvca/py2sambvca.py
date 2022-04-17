@@ -14,16 +14,16 @@ class py2sambvca():
 
     Parameters:
     xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
-    sphere_center_atom_ids (list): ID of atoms defining the sphere center 
-    z_ax_atom_ids (list): ID of atoms for z-axis 
+    sphere_center_atom_ids (list): ID of atoms defining the sphere center
+    z_ax_atom_ids (list): ID of atoms for z-axis
     xz_plane_atoms_ids (list): ID of atoms for xz-plane
     atoms_to_delete_ids (list): ID of atoms to be deleted (default None)
     sphere_radius (float): Sphere radius in Angstrom (default 3.5)
     displacement (float): Displacement of oriented molecule from sphere center in Angstrom (default 0.0)
     mesh_size (float): Mesh size for numerical integration (default 0.10)
-    remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1) 
+    remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1)
     orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
-    write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
+    write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
@@ -50,16 +50,16 @@ class py2sambvca():
 
         Parameters:
         xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
-        sphere_center_atom_ids (list): ID of atoms defining the sphere center 
-        z_ax_atom_ids (list): ID of atoms for z-axis 
+        sphere_center_atom_ids (list): ID of atoms defining the sphere center
+        z_ax_atom_ids (list): ID of atoms for z-axis
         xz_plane_atoms_ids (list): ID of atoms for xz-plane
         atoms_to_delete_ids (list): ID of atoms to be deleted (default None)
         sphere_radius (float): Sphere radius in Angstrom (default 3.5)
         displacement (float): Displacement of oriented molecule from sphere center in Angstrom (default 0.0)
         mesh_size (float): Mesh size for numerical integration (default 0.10)
-        remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1) 
+        remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1)
         orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
-        write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1) 
+        write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
         verbose (int): 0 for no output, 1 for some output, 2 for the most output
         """
@@ -160,17 +160,9 @@ class py2sambvca():
         Retrieves the buried volume from a SambVca output file in the current working directory
         or False if it cannot find it.
         """
-        # open the file, read data
-        with open("py2sambvca_input.out", 'r') as file:
-            file_data = file.readlines()
-        pattern = re.compile(
+        m = self.get_regex(
             r"    The %V Bur of the molecule is:     (\d*\.\d*)")
-        for line in file_data:
-            m = pattern.search(line)
-            if m:
-                return float(m[1])
-
-        return False
+        return float(m[1])
 
     def clean_files(self):
         """
@@ -183,7 +175,7 @@ class py2sambvca():
         """Parse output file for total, quandrant and octant results.
 
         Returns:
-            total_results (dict): Results for total 
+            total_results (dict): Results for total
             quadrant_results (dict): Quadrant-decomposed results
             octant_results (dict): Octant-decomposed results
         """
@@ -253,56 +245,202 @@ class py2sambvca():
         quadrant_results = quadrants
         octant_results = octants
 
+        self.total_results = total_results
+        self.quadrant_results = quadrant_results
+        self.octant_results = octant_results
         return total_results, quadrant_results, octant_results
 
-    def get_topology(self):
-        """Call get with the key.
+    def get_quadrant_result(self, key):
+        return self.get(key, quadrant=True)
+
+    def get_quadrant_free_volume(self):
+        """Get the quadrant free volume.
+
+        Returns:
+            float: free volume
         """
-        pass
+        return self.get_quadrant_result("free_volume")
 
-    def get_quadrants_result(self):
-        pass
+    def get_quadrant_buried_volume(self):
+        """Get the quadrant buried volume.
 
-    def get_octants(self):
-        pass
+        Returns:
+            float: buried volume
+        """
+        return self.get_quadrant_result("buried_volume")
+
+    def get_quadrant_total_volume(self):
+        """Get the quadrant total volume.
+
+        Returns:
+            float: total volume
+        """
+        return self.get_quadrant_result("total_volume")
+
+    def get_quadrant_percent_buried_volume(self):
+        """Get the quadrant percent buried volume
+
+        Returns:
+            float: total percent buried volume
+        """
+        return self.get_quadrant_result("percent_buried_volume")
+
+    def get_quadrant_percent_free_volume(self):
+        """Get the total percent buried volume
+
+        Returns:
+            float: total percent buried volume
+        """
+        return self.get_quadrant_result("percent_buried_volume")
+
+    def get_octant_result(self, key):
+        return self.get(key, octant=True)
+
+    def get_octantt_free_volume(self):
+        """Get the octant free volume.
+
+        Returns:
+            float: free volume
+        """
+        return self.get_octant_result("free_volume")
+
+    def get_octant_buried_volume(self):
+        """Get the octant buried volume.
+
+        Returns:
+            float: buried volume
+        """
+        return self.get_octant_result("buried_volume")
+
+    def get_octant_total_volume(self):
+        """Get the octant total volume.
+
+        Returns:
+            float: total volume
+        """
+        return self.get_octant_result("total_volume")
+
+    def get_octant_percent_buried_volume(self):
+        """Get the octant percent buried volume
+
+        Returns:
+            float: total percent buried volume
+        """
+        return self.get_octant_result("percent_buried_volume")
+
+    def get_octant_percent_free_volume(self):
+        """Get the octant percent buried volume
+
+        Returns:
+            float: total percent buried volume
+        """
+        return self.get_octant_result("percent_buried_volume")
 
     def get_free_volume(self):
-        pass
+        """Get the free volume.
+
+        Returns:
+            float: free volume
+        """
+        return self.get("free_volume")
 
     def get_buried_volume(self):
+        """Get the buried volume.
+
+        Returns:
+            float: buried volume
+        """
         return self.get("buried_volume")
 
     def get_exact_volume(self):
-        pass
+        """Get the exact volume.
+
+        Returns:
+            float: exact volume
+        """
+        return self.get("exact_volume")
 
     def get_total_volume(self):
-        pass
+        """Get the total volume.
+
+        Returns:
+            float: total volume
+        """
+        return self.get("total_volume")
 
     def get_percent_buried_volume(self):
-        pass
+        """Get the total percent buried volume
+
+        Returns:
+            float: total percent buried volume
+        """
+        return self.get("percent_buried_volume")
 
     def get_percent_free_volume(self):
-        pass
+        """Get the total percent buried volume
+
+        Returns:
+            float: total percent buried volume
+        """
+        return self.get("percent_buried_volume")
 
     def get_percent_total_volume(self):
-        pass
+        """Get the percent total volume
 
-    def get_regex(self):
-        pass
+        Returns:
+            float: percent total volume
+        """
+        return self.get("percent_total_volume")
+
+    def get_regex(self, regex):
+        """Open the output file and search for a line matching a regex pattern.
+
+
+        Args:
+            regex (str): regex to search
+        """
+        try:
+            with open("py2sambvca_input.out", 'r') as file:
+                file_data = file.readlines()
+        except FileNotFoundError:
+            raise RuntimeError(
+                '''
+                Results not yet retrieved.
+                Call p2s.run() or p2s.parse_output() before using this function.
+                '''
+            )
+        pattern = re.compile(regex)
+        for line in file_data:
+            m = pattern.search(line)
+            if m:
+                return m
 
     def get(self, key, quadrant=False, octant=False):
         """
         Accept a key in the output of parse results, return it.
         """
+        if self.total_results is None:
+            raise RuntimeError(
+                '''
+                Results not yet retrieved.
+                Call p2s.run() or p2s.parse_output() before using this function.
+                '''
+            )
         if not octant or quadrant:
             return self.total_results[key]
+        elif quadrant:
+            return self.quadrant_results[key]
+        elif octant:
+            return self.octant_results[key]
+        else:
+            return False
 
     def run(self):
         self.write_input()
         self.calc()
-        total_results, quadrant_results, octant_results = self.parse_output()
+        self.parse_output()
         self.clean_files()
-        return total_results, quadrant_results, octant_results
+        return self.total_results, self.quadrant_results, self.octant_results
 
 
 radii_table = [
