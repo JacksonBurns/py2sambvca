@@ -1,1 +1,1 @@
-*.f -linguist-detectable
+test/sambvca21.f -linguist-vendored
