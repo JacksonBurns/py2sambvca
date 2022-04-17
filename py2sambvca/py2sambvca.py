@@ -251,13 +251,21 @@ class py2sambvca():
         return total_results, quadrant_results, octant_results
 
     def get_quadrant_result(self, key):
+        """Get a result for the quadrants.
+
+        Args:
+            key (str): type of result
+
+        Returns:
+            dict: values requested per quadrant
+        """
         return self.get(key, quadrant=True)
 
     def get_quadrant_free_volume(self):
         """Get the quadrant free volume.
 
         Returns:
-            float: free volume
+            dict: free volume per quadrant
         """
         return self.get_quadrant_result("free_volume")
 
@@ -265,7 +273,7 @@ class py2sambvca():
         """Get the quadrant buried volume.
 
         Returns:
-            float: buried volume
+            dict: buried volume per quadrant
         """
         return self.get_quadrant_result("buried_volume")
 
@@ -273,7 +281,7 @@ class py2sambvca():
         """Get the quadrant total volume.
 
         Returns:
-            float: total volume
+            dict: total volume per quadrant
         """
         return self.get_quadrant_result("total_volume")
 
@@ -281,7 +289,7 @@ class py2sambvca():
         """Get the quadrant percent buried volume
 
         Returns:
-            float: total percent buried volume
+            dict: total percent buried volume per quadrant
         """
         return self.get_quadrant_result("percent_buried_volume")
 
@@ -289,18 +297,26 @@ class py2sambvca():
         """Get the total percent buried volume
 
         Returns:
-            float: total percent buried volume
+            dict: total percent buried volume per quadrant
         """
         return self.get_quadrant_result("percent_buried_volume")
 
     def get_octant_result(self, key):
+        """Get a result for the octant.
+
+        Args:
+            key (str): type of result
+
+        Returns:
+            dict: values requested per octant
+        """
         return self.get(key, octant=True)
 
-    def get_octantt_free_volume(self):
+    def get_octant_free_volume(self):
         """Get the octant free volume.
 
         Returns:
-            float: free volume
+            dict: free volume per octant
         """
         return self.get_octant_result("free_volume")
 
@@ -308,7 +324,7 @@ class py2sambvca():
         """Get the octant buried volume.
 
         Returns:
-            float: buried volume
+            dict: buried volume per octant
         """
         return self.get_octant_result("buried_volume")
 
@@ -316,7 +332,7 @@ class py2sambvca():
         """Get the octant total volume.
 
         Returns:
-            float: total volume
+            dict: total volume per octant
         """
         return self.get_octant_result("total_volume")
 
@@ -324,7 +340,7 @@ class py2sambvca():
         """Get the octant percent buried volume
 
         Returns:
-            float: total percent buried volume
+            dict: total percent buried volume per octant
         """
         return self.get_octant_result("percent_buried_volume")
 
@@ -332,7 +348,7 @@ class py2sambvca():
         """Get the octant percent buried volume
 
         Returns:
-            float: total percent buried volume
+            dict: total percent buried volumes per octant
         """
         return self.get_octant_result("percent_buried_volume")
 
@@ -382,7 +398,7 @@ class py2sambvca():
         Returns:
             float: total percent buried volume
         """
-        return self.get("percent_buried_volume")
+        return self.get("percent_free_volume")
 
     def get_percent_total_volume(self):
         """Get the percent total volume
@@ -394,7 +410,6 @@ class py2sambvca():
 
     def get_regex(self, regex):
         """Open the output file and search for a line matching a regex pattern.
-
 
         Args:
             regex (str): regex to search
@@ -426,7 +441,7 @@ class py2sambvca():
                 Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
-        if not octant or quadrant:
+        if not (octant or quadrant):
             return self.total_results[key]
         elif quadrant:
             return self.quadrant_results[key]
