@@ -161,7 +161,7 @@ class py2sambvca():
         or False if it cannot find it.
         """
         m = self.get_regex(
-            r"    The %V Bur of the molecule is:     (\d*\.\d*)")
+            r"    The %V Bur of the molecule is:\s{4,5}(\d*\.\d*)")
         return float(m[1])
 
     def clean_files(self):
@@ -418,9 +418,9 @@ class py2sambvca():
             with open("py2sambvca_input.out", 'r') as file:
                 file_data = file.readlines()
         except FileNotFoundError:
-            raise RuntimeError(
+            raise FileNotFoundError(
                 '''
-                Results not yet retrieved.
+                Results not yet retrieved (py2sambvca_input.out not found).
                 Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
@@ -437,7 +437,7 @@ class py2sambvca():
         if self.total_results is None:
             raise RuntimeError(
                 '''
-                Results not yet retrieved.
+                Results not yet retrieved (py2sambvca_input.out not found).
                 Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
