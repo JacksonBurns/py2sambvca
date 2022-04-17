@@ -215,7 +215,7 @@ class py2sambvca():
             for r in region:
                 m = self.get_regex(
                     r"^ " + r +
-                    "\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
+                    r"\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
                 )
                 result_dict["free_volume"][
                     r.replace("\\", "")] = float(m[1])
