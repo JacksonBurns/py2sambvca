@@ -40,7 +40,7 @@ class py2sambvca():
                  remove_H=1,
                  orient_z=1,
                  write_surf_files=1,
-                 path_to_sambvcax="/path/to/executable/sambvca.x",
+                 path_to_sambvcax="sambvca.exe",
                  verbose=1):
         """
         Wrapper class for py2sambvca functions.
