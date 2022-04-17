@@ -196,8 +196,8 @@ class py2sambvca():
             "percent_total_volume": float(m2[3]),
         }
 
-        # quadrant results
-        regions = ["SW", "NW", "NE", "SE"]
+        # quadrant and octant results
+        quadrant_regions = ["SW", "NW", "NE", "SE"]
         quadrant_results = {
             "free_volume": {},
             "buried_volume": {},
@@ -205,42 +205,29 @@ class py2sambvca():
             "percent_free_volume": {},
             "percent_buried_volume": {},
         }
-        for region in regions:
-            m = self.get_regex(
-                r"^ " + region +
-                "\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
-            )
-            quadrant_results["free_volume"][region] = float(m[1])
-            quadrant_results["buried_volume"][region] = float(m[2])
-            quadrant_results["total_volume"][region] = float(m[3])
-            quadrant_results["percent_free_volume"][region] = float(m[4])
-            quadrant_results["percent_buried_volume"][region] = float(m[5])
+        octant_regions = [r"SW\-z", r"NW\-z", r"NE\-z", r"SE\-z",
+                          r"SW\+z", r"NW\+z", r"NE\+z", r"SE\+z"]
+        octant_results = quadrant_results.copy()
 
-        # octant results
-        regions = [r"SW\-z", r"NW\-z", r"NE\-z", r"SE\-z",
-                   r"SW\+z", r"NW\+z", r"NE\+z", r"SE\+z"]
-        octant_results = {
-            "free_volume": {},
-            "buried_volume": {},
-            "total_volume": {},
-            "percent_free_volume": {},
-            "percent_buried_volume": {},
-        }
-        for region in regions:
-            m = self.get_regex(
-                r"^ " + region +
-                "\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
-            )
-            octant_results["free_volume"][
-                region.replace("\\", "")] = float(m[1])
-            octant_results["buried_volume"][
-                region.replace("\\", "")] = float(m[2])
-            octant_results["total_volume"][
-                region.replace("\\", "")] = float(m[3])
-            octant_results["percent_free_volume"][
-                region.replace("\\", "")] = float(m[4])
-            octant_results["percent_buried_volume"][
-                region.replace("\\", "")] = float(m[5])
+        for region, result_dict in zip(
+            [quadrant_regions, octant_regions],
+            [quadrant_results, octant_results],
+        ):
+            for r in region:
+                m = self.get_regex(
+                    r"^ " + r +
+                    "\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
+                )
+                result_dict["free_volume"][
+                    r.replace("\\", "")] = float(m[1])
+                result_dict["buried_volume"][
+                    r.replace("\\", "")] = float(m[2])
+                result_dict["total_volume"][
+                    r.replace("\\", "")] = float(m[3])
+                result_dict["percent_free_volume"][
+                    r.replace("\\", "")] = float(m[4])
+                result_dict["percent_buried_volume"][
+                    r.replace("\\", "")] = float(m[5])
 
         self.total_results = total_results
         self.quadrant_results = quadrant_results
