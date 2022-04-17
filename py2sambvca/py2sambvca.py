@@ -161,7 +161,7 @@ class py2sambvca():
         or False if it cannot find it.
         """
         m = self.get_regex(
-            r"    The %V Bur of the molecule is:\s{4,5}(\d*\.\d*)")
+            r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
         return float(m[1])
 
     def clean_files(self):
@@ -218,6 +218,7 @@ class py2sambvca():
                 try:
                     v_free, v_buried, v_total, v_exact = read_floats(
                         next(iterlines))
+                    pass
                 except:
                     pass
             if "%V Free   %V Buried  % V Tot/V Ex" in line:
@@ -231,7 +232,10 @@ class py2sambvca():
                 quadrants = read_quad_oct(iterlines)
             if "Octants analysis" in line:
                 octants = read_quad_oct(iterlines)
-
+        # v_free
+        # v_buried
+        # v_total
+        # v_exact
         # Create results dictionaries
         total_results = {
             "free_volume": v_free,
