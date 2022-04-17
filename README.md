@@ -12,6 +12,8 @@
 pip install py2sambvca
 ```
 
+`py2sambvca` has __zero__ external depdencies.
+
 ## Usage
 After installation, `py2sambvca` can be added to a Python script via `import` and instantiated:
 ```python
