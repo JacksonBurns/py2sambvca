@@ -26,9 +26,9 @@ class Testpy2sambvca(unittest.TestCase):
         self.orient_Z = 0
         self.write_surf_files = 0
         if sys.platform == "win32":
-            self.exe_path = os.path.join(cwd, "..", "executables", "sambvca21.exe")
+            self.exe_path = os.path.join(cwd, "executables", "sambvca21.exe")
         else:
-            self.exe_path = os.path.join(cwd, "..", "executables", "sambvca21.x")
+            self.exe_path = os.path.join(cwd, "executables", "sambvca21.x")
 
     def test_no_init_error(self):
         """
@@ -264,6 +264,7 @@ class Testpy2sambvca(unittest.TestCase):
             path_to_sambvcax=self.exe_path,
             verbose=0,
         )
+        print(test_p2s.path_to_sambvcax)
         test_p2s.run()
 
     def test_getters(self):
