@@ -1,0 +1,13 @@
+name: py2sambvca
+channels:
+  - conda-forge
+dependencies:
+  - python 3.9
+  - notebook
+  - jupyter
+  - numpy
+  - pandas
+  - matplotlib
+  - pip
+  - pip:
+      - py2sambvca
