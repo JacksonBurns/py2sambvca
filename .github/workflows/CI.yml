@@ -64,7 +64,6 @@ jobs:
   windows-test:
     name: Testing on Windows
     runs-on: windows-2019
-    if: github.event_name == 'workflow_dispatch'
     defaults:
       run:
         shell: bash -l {0}
