@@ -27,11 +27,11 @@ jobs:
       - name: Cache conda
         uses: actions/cache@v2
         env:
-          # Increase this value to reset cache even if environment.yml has not changed
+          # Increase this value to reset cache even if environment.yaml has not changed
           CACHE_NUMBER: 4
         with:
           path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+          key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yaml') }}
 
       - name: Create adaptivefiltering conda environment
         uses: conda-incubator/setup-miniconda@v2
@@ -39,7 +39,7 @@ jobs:
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: py2sambvca
-          environment-file: environment.yml
+          environment-file: environment.yaml
           use-only-tar-bz2: true
 
       - name: Install py2sambvca Python package
@@ -76,11 +76,11 @@ jobs:
       - name: Cache conda
         uses: actions/cache@v2
         env:
-          # Increase this value to reset cache even if environment.yml has not changed
+          # Increase this value to reset cache even if environment.yaml has not changed
           CACHE_NUMBER: 0
         with:
           path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+          key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yaml') }}
 
       - name: Create adaptivefiltering conda environment
         uses: conda-incubator/setup-miniconda@v2
@@ -88,7 +88,7 @@ jobs:
           auto-update-conda: true
           auto-activate-base: false
           activate-environment: py2sambvca
-          environment-file: environment.yml
+          environment-file: environment.yaml
           use-only-tar-bz2: true
 
       - name: Install development dependencies
