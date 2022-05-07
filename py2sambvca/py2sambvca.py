@@ -4,6 +4,7 @@ import glob
 import os
 from tempfile import mkdtemp
 import shutil
+import sys
 
 
 class py2sambvca:
@@ -19,7 +20,7 @@ class py2sambvca:
     z_ax_atom_ids (list): ID of atoms for z-axis
     xz_plane_atoms_ids (list): ID of atoms for xz-plane
     atoms_to_delete_ids (list): ID of atoms to be deleted (default None)
-    sphere_radius (float): Sphere radius in Angstrom (default 3.5)
+    sphere_radius (float): Sphere radius in Angstrom (default 3.5). Only used for single point calculation.
     displacement (float): Displacement of oriented molecule from sphere center in Angstrom (default 0.0)
     mesh_size (float): Mesh size for numerical integration (default 0.10)
     remove_H (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1)
@@ -42,7 +43,7 @@ class py2sambvca:
         remove_H=1,
         orient_z=1,
         write_surf_files=1,
-        path_to_sambvcax="sambvca.exe",
+        path_to_sambvcax=None,
         verbose=1,
     ):
         """
@@ -89,8 +90,18 @@ class py2sambvca:
         # open the xyz file, read the data
         with open(xyz_filepath, "r") as file:
             self.xyz_data = file.readlines()
+
         # assign the path to the calculator
-        self.path_to_sambvcax = path_to_sambvcax
+        if path_to_sambvcax is None:
+            if sys.platform == "win32":
+                self.path_to_sambvcax = os.path.join(
+                    "..", "executables", "sambvca21.exe"
+                )
+            else:
+                self.path_to_sambvcax = os.path.join("..", "executables", "sambvca21.x")
+        else:
+            self.path_to_sambvcax = path_to_sambvcax
+        print(self.path_to_sambvcax)
         self.verbose = verbose
 
         # make results accesible from object directly
@@ -167,6 +178,7 @@ class py2sambvca:
 
         """
         try:
+            print(self.path_to_sambvcax)
             result = subprocess.run(
                 [self.path_to_sambvcax, os.path.splitext(self.input_file)[0]],
                 stderr=subprocess.DEVNULL,
@@ -206,6 +218,14 @@ class py2sambvca:
         )
 
         m2 = self.get_regex(r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+
+        if m1 is None:
+            print(
+                "The calculation could not produce a suitable result. Most likely this is due to the chosen radius beeing too large or too small."
+            )
+            m1 = [0, 0, 0, 0, 0, 0]
+        if m2 is None:
+            m2 = [0, 0, 0, 0, 0, 0]
 
         total_results = {
             "free_volume": float(m1[1]),

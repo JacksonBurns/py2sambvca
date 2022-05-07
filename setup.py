@@ -12,13 +12,13 @@ README = (cwd / "README.md").read_text()
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
-    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
+    with codecs.open(os.path.join(here, rel_path), "r") as fp:
         return fp.read()
 
 
 def get_version(rel_path):
     for line in read(rel_path).splitlines():
-        if line.startswith('__version__'):
+        if line.startswith("__version__"):
             delim = '"' if '"' in line else "'"
             return line.split(delim)[1]
     else:
@@ -32,12 +32,10 @@ setup(
     description="Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/JacksonBurns/py2sambvca",
+    url="https://github.com/GwydionJon/py2sambvca",
     author="Jackson Burns",
     license="GNU GPLv3",
-    classifiers=[
-        "Programming Language :: Python :: 3"
-    ],
+    classifiers=["Programming Language :: Python :: 3"],
     packages=["py2sambvca"],
-    include_package_data=True
+    include_package_data=True,
 )
