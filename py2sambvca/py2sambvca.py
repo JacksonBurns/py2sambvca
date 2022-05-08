@@ -5,6 +5,9 @@ import os
 from tempfile import mkdtemp
 import shutil
 import sys
+import numpy as np
+import pandas as pd
+from collections import defaultdict
 
 
 class py2sambvca:
@@ -84,9 +87,9 @@ class py2sambvca:
         self.sphere_radius = sphere_radius
         self.displacement = displacement
         self.mesh_size = mesh_size
-        self.remove_H = remove_H
-        self.orient_z = orient_z
-        self.write_surf_files = write_surf_files
+        self.remove_H = int(remove_H)
+        self.orient_z = int(orient_z)
+        self.write_surf_files = int(write_surf_files)
         # open the xyz file, read the data
         with open(xyz_filepath, "r") as file:
             self.xyz_data = file.readlines()
@@ -101,7 +104,6 @@ class py2sambvca:
                 self.path_to_sambvcax = os.path.join("..", "executables", "sambvca21.x")
         else:
             self.path_to_sambvcax = path_to_sambvcax
-        print(self.path_to_sambvcax)
         self.verbose = verbose
 
         # make results accesible from object directly
@@ -178,7 +180,6 @@ class py2sambvca:
 
         """
         try:
-            print(self.path_to_sambvcax)
             result = subprocess.run(
                 [self.path_to_sambvcax, os.path.splitext(self.input_file)[0]],
                 stderr=subprocess.DEVNULL,
@@ -221,7 +222,7 @@ class py2sambvca:
 
         if m1 is None:
             print(
-                "The calculation could not produce a suitable result. Most likely this is due to the chosen radius beeing too large or too small."
+                f"The calculation for {self.sphere_radius} could not produce a suitable result. Most likely this is due to the chosen radius beeing too large or too small."
             )
             m1 = [0, 0, 0, 0, 0, 0]
         if m2 is None:
@@ -443,13 +444,14 @@ class py2sambvca:
         Args:
             regex (str): regex to search
         """
+        output_file = os.path.join(os.path.splitext(self.input_file)[0] + ".out")
         try:
-            with open(os.path.join(self.tmp_dir, "py2sambvca_input.out"), "r") as file:
+            with open(output_file, "r") as file:
                 file_data = file.readlines()
         except FileNotFoundError:
             raise FileNotFoundError(
-                """
-                Results not yet retrieved (py2sambvca_input.out not found).
+                f"""
+                Results not yet retrieved ({output_file} not found).
                 Call p2s.run() or p2s.parse_output() before using this function.
                 """
             )
@@ -485,6 +487,46 @@ class py2sambvca:
         self.parse_output()
         self.clean_files()
         return self.total_results, self.quadrant_results, self.octant_results
+
+    def run_range(self, r_min, r_max, nstep=50):
+        """
+        This function is designed to scan a range of sphere_radii.
+        The results are stores in a pandas dataframe.
+        Note: If the given radius is too big or too small no output will be stored for this radius.
+        Args:
+            r_min (number): minimum radius
+            r_max (number): maximum radius
+            nstep (int, optional): Number of steps. Defaults to 50.
+
+        Returns:
+            pandas.DataFrame: A DateFrame object for easy accsess to the results.
+        """
+
+        # store original input_file and radius values:
+        old_radius = self.sphere_radius
+        old_input_filee = self.input_file
+
+        dict_total_results = defaultdict(list)
+
+        for r in np.linspace(r_min, r_max, nstep):
+            self.input_file = os.path.join(self.tmp_dir, f"py2sambvca_input_r_{r}.inp")
+            self.sphere_radius = r
+            self.write_input()
+            self.calc()
+            total_results, quadrant_results, octant_results = self.parse_output()
+            if total_results["total_volume"] != 0:
+                dict_total_results["r"].append(r)
+                [
+                    dict_total_results[key].append(value)
+                    for key, value in total_results.items()
+                ]
+
+        df_total_results = pd.DataFrame(dict_total_results)
+        # return original values
+        self.sphere_radius = old_radius
+        self.input_file = old_input_filee
+
+        return df_total_results
 
 
 radii_table = [
