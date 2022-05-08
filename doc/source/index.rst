@@ -11,6 +11,8 @@ Welcome to py2sambvca's documentation!
    :caption: Contents:
 
    intro
+   original_functionality
+   new_functionality
    example_notebook
 
 

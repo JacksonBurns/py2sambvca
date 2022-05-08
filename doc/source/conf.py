@@ -26,8 +26,8 @@ sys.path.insert(0, os.path.abspath("../.."))
 # -- Project information -----------------------------------------------------
 
 project = "py2sambvca"
-copyright = "2022, Gwydion Jonathan Daskalakis, Falivene, L. et al."
-author = "Gwydion Jonathan Daskalakis, Falivene, L. et al."
+copyright = "2022, Gwydion Jonathan Daskalakis, Burns, J."
+author = "Gwydion Jonathan Daskalakis, Burns, J."
 
 # The full version, including alpha/beta/rc tags
 release = py2sambvca.__version__
