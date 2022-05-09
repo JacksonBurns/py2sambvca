@@ -25,7 +25,6 @@ class py2sambvca():
     write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
     working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
-
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
 
@@ -63,6 +62,7 @@ class py2sambvca():
         orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
         write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
+        working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
         verbose (int): 0 for no output, 1 for some output, 2 for the most output
         """
         # if atoms are requested to be deleted, assign them and the number of them
@@ -72,6 +72,7 @@ class py2sambvca():
         else:  # otherwise, set to none to avoid bad writes in the future
             self.n_atoms_to_delete = None
             self.atoms_to_delete_ids = None
+
         # various other parameters
         self.sphere_center_atom_ids = sphere_center_atom_ids
         self.n_sphere_center_atoms = len(sphere_center_atom_ids)
@@ -85,16 +86,20 @@ class py2sambvca():
         self.remove_H = remove_H
         self.orient_z = orient_z
         self.write_surf_files = write_surf_files
+
         # open the xyz file, read the data
         with open(xyz_filepath, "r") as file:
             self.xyz_data = file.readlines()
+
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
+
         # assign working directory path
         self.working_dir = working_dir
         if not os.path.exists(self.working_dir):
             os.makedirs(self.working_dir)
 
+        # integer verbosity
         self.verbose = verbose
 
         # make results accesible from object directly
@@ -411,7 +416,7 @@ class py2sambvca():
             with open(os.path.join(self.working_dir, "py2sambvca_input.out"), 'r') as file:
                 file_data = file.readlines()
         except FileNotFoundError:
-            raise FileNotFoundError(
+            raise RuntimeError(
                 f'''
                 Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
                 Call p2s.run() or p2s.parse_output() before using this function.
