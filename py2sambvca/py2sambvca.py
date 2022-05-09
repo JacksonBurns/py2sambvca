@@ -42,7 +42,7 @@ class py2sambvca():
                  orient_z=1,
                  write_surf_files=1,
                  path_to_sambvcax="sambvca.exe",
-                 working_dir = os.getcwd(),
+                 working_dir=os.getcwd(),
                  verbose=1):
         """
         Wrapper class for py2sambvca functions.
@@ -90,7 +90,7 @@ class py2sambvca():
             self.xyz_data = file.readlines()
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
-        #assign working directory path 
+        # assign working directory path
         self.working_dir = working_dir
         if not os.path.exists(self.working_dir):
             os.makedirs(self.working_dir)
@@ -109,7 +109,7 @@ class py2sambvca():
 
         """
         # make file in the same cwd, which is where sambvca will look
-        with open(os.path.join(self.working_dir,"py2sambvca_input.inp"), "w") as file:
+        with open(os.path.join(self.working_dir, "py2sambvca_input.inp"), "w") as file:
             # write atoms to be deleted, if there are any
             if self.atoms_to_delete_ids is not None:
                 file.writelines([
@@ -152,7 +152,8 @@ class py2sambvca():
         """
         try:
             result = subprocess.run(
-                [self.path_to_sambvcax, os.path.join(self.working_dir,"py2sambvca_input")],
+                [self.path_to_sambvcax, os.path.join(
+                    self.working_dir, "py2sambvca_input")],
                 stderr=subprocess.DEVNULL
             )
             result.check_returncode()
@@ -176,7 +177,8 @@ class py2sambvca():
         Remove all input and output files associated with py2sambvca.
 
         """
-        [os.remove(i) for i in glob.glob(os.path.join(self.working_dir,"py2sambvca_input*"))]
+        [os.remove(i) for i in glob.glob(os.path.join(
+            self.working_dir, "py2sambvca_input*"))]
 
     def parse_output(self):
         """Parse output file for total, quadrant, and octant results.
@@ -406,7 +408,7 @@ class py2sambvca():
             regex (str): regex to search
         """
         try:
-            with open(os.path.join(self.working_dir,"py2sambvca_input.out"), 'r') as file:
+            with open(os.path.join(self.working_dir, "py2sambvca_input.out"), 'r') as file:
                 file_data = file.readlines()
         except FileNotFoundError:
             raise FileNotFoundError(
