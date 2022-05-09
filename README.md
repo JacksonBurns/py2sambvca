@@ -27,6 +27,25 @@ nhc_p2s = p2s(
     path_to_sambvcax="sambvca21.exe",
 )
 ```
+The required input parameters are shown below:
+ - `xyz_filepath` (str): Location of .xyz molecular coordinates file for writing input data
+ - `sphere_center_atom_ids` (list): ID of atoms defining the sphere center
+ - `z_ax_atom_ids` (list): ID of atoms for z-axis
+ - `xz_plane_atoms_ids` (list): ID of atoms for xz-plane
+
+The following parameters are optional and will be filled with default values if not specified:
+ - `atoms_to_delete_ids` (list): ID of atoms to be deleted (default None)
+ - `sphere_radius` (float): Sphere radius in Angstrom (default 3.5)
+ - `displacement` (float): Displacement of oriented molecule from sphere center in Angstrom (default 0.0)
+ - `mesh_size` (float): Mesh size for numerical integration (default 0.10)
+ - `remove_H` (int): 0/1 Do not remove/remove H atoms from Vbur calculation (default 1)
+ - `orient_z` (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
+ - `write_surf_files` (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
+ - `path_to_sambvcax` (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()(default "sambvca.exe")
+ - `working_dir` (path): Path to the working directory where the output and input files are generated (default os.getcwd())
+ - `verbose` (int): 0 for no output, 1 for some output, 2 for the most output (default 1)
+
+
 From here, running can be done stepwise or with a single function:
 ```python
 nhc_p2s.run()
@@ -39,28 +58,15 @@ nhc_p2s.clean_files()
 
 All values for the total complex, quadrants, and octants are available through getters:
 
-Total Values:
- - `get_free_volume()`
- - `get_buried_volume()`
- - `get_exact_volume()`
- - `get_total_volume()`
- - `get_percent_buried_volume()`
- - `get_percent_free_volume()`
- - `get_percent_total_volume()`
-
-Quadrant Values:
- - `get_quadrant_free_volume()`
- - `get_quadrant_buried_volume()`
- - `get_quadrant_total_volume()`
- - `get_quadrant_percent_buried_volume()`
- - `get_quadrant_percent_free_volume()`
-
-Octant Values:
- - `get_octant_free_volume()`
- - `get_octant_buried_volume()`
- - `get_octant_total_volume()`
- - `get_octant_percent_buried_volume()`
- - `get_octant_percent_free_volume()`
+| Total Values | Quadrant Values | Octant Values |
+| --- | --- | --- |
+| `get_free_volume()` | `get_quadrant_free_volume()` | `get_octant_free_volume()` |
+| `get_buried_volume()` | `get_quadrant_buried_volume()` | `get_octant_buried_volume()` |
+| `get_exact_volume()` | _not available_ | _not available_ |
+| `get_total_volume()` | `get_quadrant_total_volume()` | `get_octant_total_volume()` |
+| `get_percent_buried_volume()` | `get_quadrant_percent_buried_volume()` | `get_octant_percent_buried_volume()` |
+| `get_percent_free_volume()` | `get_quadrant_percent_free_volume()` | `get_octant_percent_free_volume()` |
+| `get_percent_total_volume()` | _not available_ | _not available_ |
 
 Results can also be accessed through a general getter method: `get()`, `get_quadrant_result()`, and `get_octant_result()`.
 
