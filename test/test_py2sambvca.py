@@ -268,7 +268,7 @@ class Testpy2sambvca(unittest.TestCase):
 
     def test_run_different_dir(self):
         """
-            Full call to all functions using run in a different directory
+        Full call to all functions using run in a different directory
         """
         test_p2s = p2s(
             self.xyz_file,
@@ -277,11 +277,9 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
             verbose=0,
-            working_dir = self.working_dir
+            working_dir=self.working_dir
         )
         test_p2s.run()
-
-
 
     def test_getters(self):
         """
