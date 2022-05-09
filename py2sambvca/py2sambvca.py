@@ -9,7 +9,7 @@ class py2sambvca():
     Wrapper class for py2sambvca functions.
 
     Call this class to instantiate a py2sambvca object, which has methods to write input, call SambVca,
-    and retreieve output.
+    and retrieve output.
 
     Parameters:
     xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
@@ -24,6 +24,7 @@ class py2sambvca():
     orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
     write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
+    working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
 
@@ -40,12 +41,13 @@ class py2sambvca():
                  orient_z=1,
                  write_surf_files=1,
                  path_to_sambvcax="sambvca.exe",
+                 working_dir=os.getcwd(),
                  verbose=1):
         """
         Wrapper class for py2sambvca functions.
 
         Call this class to instantiate a py2sambvca object, which has methods to write input, call SambVca,
-        and retreieve output.
+        and retrieve output.
 
         Parameters:
         xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
@@ -60,6 +62,7 @@ class py2sambvca():
         orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
         write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
+        working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
         verbose (int): 0 for no output, 1 for some output, 2 for the most output
         """
         # if atoms are requested to be deleted, assign them and the number of them
@@ -69,6 +72,7 @@ class py2sambvca():
         else:  # otherwise, set to none to avoid bad writes in the future
             self.n_atoms_to_delete = None
             self.atoms_to_delete_ids = None
+
         # various other parameters
         self.sphere_center_atom_ids = sphere_center_atom_ids
         self.n_sphere_center_atoms = len(sphere_center_atom_ids)
@@ -82,11 +86,20 @@ class py2sambvca():
         self.remove_H = remove_H
         self.orient_z = orient_z
         self.write_surf_files = write_surf_files
+
         # open the xyz file, read the data
         with open(xyz_filepath, "r") as file:
             self.xyz_data = file.readlines()
+
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
+
+        # assign working directory path
+        self.working_dir = working_dir
+        if not os.path.exists(self.working_dir):
+            os.makedirs(self.working_dir)
+
+        # integer verbosity
         self.verbose = verbose
 
         # make results accesible from object directly
@@ -101,7 +114,7 @@ class py2sambvca():
 
         """
         # make file in the same cwd, which is where sambvca will look
-        with open("py2sambvca_input.inp", "w") as file:
+        with open(os.path.join(self.working_dir, "py2sambvca_input.inp"), "w") as file:
             # write atoms to be deleted, if there are any
             if self.atoms_to_delete_ids is not None:
                 file.writelines([
@@ -137,14 +150,15 @@ class py2sambvca():
 
     def calc(self):
         """
-        Call SambVca based on the executable path given on initiliazation of py2sambvca.
+        Call SambVca based on the executable path given on initialization of py2sambvca.
 
         Be sure to write_input() before calling this function.
 
         """
         try:
             result = subprocess.run(
-                [self.path_to_sambvcax, "py2sambvca_input"],
+                [self.path_to_sambvcax, os.path.join(
+                    self.working_dir, "py2sambvca_input")],
                 stderr=subprocess.DEVNULL
             )
             result.check_returncode()
@@ -168,10 +182,11 @@ class py2sambvca():
         Remove all input and output files associated with py2sambvca.
 
         """
-        [os.remove(i) for i in glob.glob("py2sambvca_input*")]
+        [os.remove(i) for i in glob.glob(os.path.join(
+            self.working_dir, "py2sambvca_input*"))]
 
     def parse_output(self):
-        """Parse output file for total, quandrant, and octant results.
+        """Parse output file for total, quadrant, and octant results.
 
         Returns:
             total_results (dict): Results for total
@@ -398,12 +413,12 @@ class py2sambvca():
             regex (str): regex to search
         """
         try:
-            with open("py2sambvca_input.out", 'r') as file:
+            with open(os.path.join(self.working_dir, "py2sambvca_input.out"), 'r') as file:
                 file_data = file.readlines()
         except FileNotFoundError:
-            raise FileNotFoundError(
-                '''
-                Results not yet retrieved (py2sambvca_input.out not found).
+            raise RuntimeError(
+                f'''
+                Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
                 Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
@@ -419,8 +434,8 @@ class py2sambvca():
         """
         if self.total_results is None:
             raise RuntimeError(
-                '''
-                Results not yet retrieved (py2sambvca_input.out not found).
+                f'''
+                Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
                 Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
