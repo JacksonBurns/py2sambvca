@@ -266,6 +266,45 @@ class Testpy2sambvca(unittest.TestCase):
         )
         test_p2s.run()
 
+    def test_create_working_dir(self):
+        """
+        Initialize with a non-existsent directory and check for creation
+        """
+        test_p2s = p2s(
+            self.xyz_file,
+            self.sphere_ids,
+            self.z_ids,
+            self.xz_ids,
+            path_to_sambvcax=self.exe_path,
+            verbose=0,
+            working_dir=self.working_dir
+        )
+        self.assertTrue(
+            os.path.exists(self.working_dir)
+        )
+
+    def test_existing_working_dir(self):
+        """
+        Initialize with an existing directory and check for creation of input in it
+        """
+        test_p2s = p2s(
+            self.xyz_file,
+            self.sphere_ids,
+            self.z_ids,
+            self.xz_ids,
+            path_to_sambvcax=self.exe_path,
+            verbose=0,
+            working_dir=self.working_dir
+        )
+        test_p2s.write_input()
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(
+                    self.working_dir, "py2sambvca_input.inp"
+                )
+            )
+        )
+
     def test_run_different_dir(self):
         """
         Full call to all functions using run in a different directory
