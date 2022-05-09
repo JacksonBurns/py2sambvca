@@ -9,7 +9,7 @@ class py2sambvca():
     Wrapper class for py2sambvca functions.
 
     Call this class to instantiate a py2sambvca object, which has methods to write input, call SambVca,
-    and retreieve output.
+    and retrieve output.
 
     Parameters:
     xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
@@ -24,7 +24,7 @@ class py2sambvca():
     orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
     write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
-    working_dir (path): Path to the working directoy where the output and input files are generated (default os.getcwd())
+    working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
 
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
@@ -48,7 +48,7 @@ class py2sambvca():
         Wrapper class for py2sambvca functions.
 
         Call this class to instantiate a py2sambvca object, which has methods to write input, call SambVca,
-        and retreieve output.
+        and retrieve output.
 
         Parameters:
         xyz_filepath (str): Location of .xyz molecular coordinates file for writing input data
@@ -145,7 +145,7 @@ class py2sambvca():
 
     def calc(self):
         """
-        Call SambVca based on the executable path given on initiliazation of py2sambvca.
+        Call SambVca based on the executable path given on initialization of py2sambvca.
 
         Be sure to write_input() before calling this function.
 
@@ -179,7 +179,7 @@ class py2sambvca():
         [os.remove(i) for i in glob.glob(os.path.join(self.working_dir,"py2sambvca_input*"))]
 
     def parse_output(self):
-        """Parse output file for total, quandrant, and octant results.
+        """Parse output file for total, quadrant, and octant results.
 
         Returns:
             total_results (dict): Results for total
