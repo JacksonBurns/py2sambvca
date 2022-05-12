@@ -1,6 +1,7 @@
 # py2sambvca
 ![GitHub Repo stars](https://img.shields.io/github/stars/JacksonBurns/py2sambvca?style=social)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/py2sambvca)
+[![Downloads](https://static.pepy.tech/personalized-badge/py2sambvca?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/py2sambvca)
 ![PyPI](https://img.shields.io/pypi/v/py2sambvca)
 ![PyPI - License](https://img.shields.io/pypi/l/py2sambvca)
 
