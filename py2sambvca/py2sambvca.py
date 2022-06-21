@@ -192,8 +192,8 @@ class py2sambvca():
         Remove all input and output files associated with py2sambvca.
 
         """
-        [os.remove(i) for i in glob.glob(os.path.join(
-            self.working_dir, "py2sambvca_input*"))]
+        for f in glob.glob(os.path.join(self.working_dir, "py2sambvca_input*")):
+            os.remove(f)
 
     def parse_output(self):
         """Parse output file for total, quadrant, and octant results.
