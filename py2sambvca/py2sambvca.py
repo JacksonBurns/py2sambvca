@@ -90,8 +90,11 @@ class py2sambvca():
         self.write_surf_files = write_surf_files
 
         # open the xyz file, read the data
-        with open(xyz_filepath, "r") as file:
-            self.xyz_data = file.readlines()
+        if xyz_filepath.endswith('.xyz'):
+            with open(xyz_filepath, "r") as file:
+                self.xyz_data = file.readlines()
+        else:
+            raise RuntimeError(f'Invalid xyz_filepath ({xyz_filepath})')
 
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
