@@ -2,6 +2,8 @@ import subprocess
 import re
 import glob
 import os
+from typing import List
+from warnings import warn
 
 
 class py2sambvca():
@@ -29,20 +31,20 @@ class py2sambvca():
     """
 
     def __init__(self,
-                 xyz_filepath,
-                 sphere_center_atom_ids,
-                 z_ax_atom_ids,
-                 xz_plane_atoms_ids,
-                 atoms_to_delete_ids=None,
-                 sphere_radius=3.5,
-                 displacement=0.0,
-                 mesh_size=0.10,
-                 remove_H=1,
-                 orient_z=1,
-                 write_surf_files=1,
-                 path_to_sambvcax="sambvca.exe",
-                 working_dir=os.getcwd(),
-                 verbose=1):
+                 xyz_filepath: str,
+                 sphere_center_atom_ids: List[int],
+                 z_ax_atom_ids: List[int],
+                 xz_plane_atoms_ids: List[int],
+                 atoms_to_delete_ids: List[int] = None,
+                 sphere_radius: float = 3.5,
+                 displacement: float = 0.0,
+                 mesh_size: float = 0.10,
+                 remove_H: int = 1,
+                 orient_z: int = 1,
+                 write_surf_files: int = 1,
+                 path_to_sambvcax: str = "sambvca.exe",
+                 working_dir: str = os.getcwd(),
+                 verbose: int = 1):
         """
         Wrapper class for py2sambvca functions.
 
@@ -173,6 +175,14 @@ class py2sambvca():
         Retrieves the buried volume from a SambVca output file in the current working directory
         or False if it cannot find it.
         """
+        warn(
+            '''
+            get_buried_volume is deprecated and will be removed in py2sambvca 2.0
+            Use get_buried_volume instead
+            ''',
+            DeprecationWarning,
+            stacklevel=2,
+        )
         m = self.get_regex(
             r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
         return float(m[1])
