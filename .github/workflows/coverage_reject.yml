@@ -28,17 +28,17 @@ jobs:
           echo "COVERAGE_PERCENT=$(cat temp2.txt)" >> $GITHUB_ENV
 
       - name: Request Changes via Review
-        if: ${{ env.COVERAGE_PERCENT < 95 }}
+        if: ${{ env.COVERAGE_PERCENT < 100 }}
         uses: andrewmusgrave/automatic-pull-request-review@0.0.5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           event: REQUEST_CHANGES
-          body: 'Increase test coverage from ${{ env.COVERAGE_PERCENT }}% to at least 95% before merging.'
+          body: 'Increase test coverage from ${{ env.COVERAGE_PERCENT }}% to 100% before merging.'
   
       - name: Approve PR if Coverage Sufficient
-        if: ${{ env.COVERAGE_PERCENT > 94 }}
+        if: ${{ env.COVERAGE_PERCENT == 100 }}
         uses: andrewmusgrave/automatic-pull-request-review@0.0.5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           event: APPROVE
-          body: 'Test coverage meets or exceeds 95% threshold (currently ${{ env.COVERAGE_PERCENT }}%).'
+          body: 'Test coverage meets 100% requirement (currently ${{ env.COVERAGE_PERCENT }}%).'

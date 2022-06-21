@@ -180,8 +180,8 @@ class py2sambvca():
         """
         warn(
             '''
-            get_buried_volume is deprecated and will be removed in py2sambvca 2.0
-            Use get_buried_volume instead
+get_buried_vol is deprecated and will be removed in py2sambvca 2.0
+Use get_buried_volume instead
             ''',
             DeprecationWarning,
             stacklevel=2,
@@ -448,18 +448,25 @@ class py2sambvca():
         if self.total_results is None:
             raise RuntimeError(
                 f'''
-                Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-                Call p2s.run() or p2s.parse_output() before using this function.
+Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
+Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
-        if not (octant or quadrant):
-            return self.total_results[key]
-        elif quadrant:
-            return self.quadrant_results[key]
-        elif octant:
-            return self.octant_results[key]
-        else:
-            return False
+        try:
+            if octant and quadrant:
+                raise RuntimeError(
+                    'Specify either quadrant or octant, not both'
+                )
+            elif quadrant:
+                return self.quadrant_results[key]
+            elif octant:
+                return self.octant_results[key]
+            else:
+                return self.total_results[key]
+        except KeyError as e:
+            if self.verbose:
+                print(e)
+            raise RuntimeError(f'Invalid parameter name "{key}"')
 
     def run(self):
         self.write_input()
