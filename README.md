@@ -86,8 +86,10 @@ In case there is something else you are looking for, you can use a general purpo
 ### Examples
 Here are a couple repositories using `py2sambvca` as a Python package or extending its source code, check them out:
  - ~~[Metal-organic framework stability analysis by Hiu Ki](https://github.com/hiukiwong/mof-stability-ml)~~
- - [Phosphine ligand parameterization for Machine Learning by Kjell Jorner](https://github.com/kjelljorner/morfeus)
  - [MOF Stability ML by Ruihan Wang](https://github.com/ruihwang/mof-stability-ml)
+
+### See Also
+ - Kjell Jorner's [morfeus](https://github.com/kjelljorner/morfeus) package re-implements the original buried volume algorithm directly in Python
 
 ## License
 `py2sambvca` is available under the GNU GPLv3 in accordance with the base Fortran code which is available under the same license and can be retreieved here: https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html
