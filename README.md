@@ -15,6 +15,11 @@ pip install py2sambvca
 
 `py2sambvca` has __zero__ external depdencies.
 
+### Downloading and Compiling `Sambvca`
+`py2sambvca` can read and write input and output files for `Sambvca` without the actual program in place, but in order to run input files you must have an executable `sambvca21.exe` (or similar) somewhere on your machine.
+
+You can download the source code [on the `Sambvca` webserver](https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html) and compile it using [`gfortran`](https://gcc.gnu.org/wiki/GFortranBinaries).
+
 ## Usage
 After installation, `py2sambvca` can be added to a Python script via `import` and instantiated:
 ```python
@@ -28,6 +33,9 @@ nhc_p2s = p2s(
     path_to_sambvcax="sambvca21.exe",
 )
 ```
+`path_to_sambvca` is an optional parameter that dictates where your sambvca executable is. By default, `py2sambvca` will assume that the executable is located in the current working directory and call it as `sambvca21.exe`.
+
+
 The required input parameters are shown below:
  - `xyz_filepath` (str): Location of .xyz molecular coordinates file for writing input data
  - `sphere_center_atom_ids` (list): ID of atoms defining the sphere center
@@ -92,6 +100,6 @@ The original fortran program (`sambvca21.f`) is also included in the `test` dire
  - The results from using the source code are provided "AS IS" without warranty of any kind.
 
 ## Citation
-Please cite the `SambVca` base fortran tool as: Falivene, L. et al. Nat. Chem. 2019, DOI:10.1038/s41557-019-0319-5 
+Please cite the `SambVca` underlying Fortran tool according to the guidelines on the buried volume webserver: [https://www.molnac.unisa.it/OMtools/sambvca2.1/help/help.html](https://www.molnac.unisa.it/OMtools/sambvca2.1/help/help.html)
 
-`py2sambvca` has been uploaded to Figshare and may be cited as: Burns, J. figshare. 2020, DOI:10.6084/m9.figshare.12846707
+`py2sambvca` has been uploaded to Figshare and may be cited as: Burns, J. figshare. 2020, DOI:[10.6084/m9.figshare.12846707](https://figshare.com/articles/software/py2sambvca/12846707)

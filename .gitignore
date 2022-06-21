@@ -151,3 +151,7 @@ Thumbs.db
 
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+
+# Sambvca compiled programs
+sambvca21.exe
+sambvca21.x

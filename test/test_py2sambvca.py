@@ -34,7 +34,7 @@ class Testpy2sambvca(unittest.TestCase):
 
     def test_no_init_error(self):
         """
-        Call calc without first writing input, assure result is false.
+        Call various methods without first writing input, assure result is false.
         """
         test_p2s = p2s(
             self.xyz_file,
@@ -42,10 +42,39 @@ class Testpy2sambvca(unittest.TestCase):
             self.z_ids,
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
-            verbose=0,
+            verbose=2,
         )
         test_p2s.clean_files()
+
+        # calc returns false without input file
         self.assertFalse(test_p2s.calc())
+
+        # getters raise errors without output files
+        with self.assertRaises(
+            RuntimeError,
+            msg='get_regex should not work without first running',
+        ):
+            test_p2s.get_regex('test')
+
+        with self.assertRaises(
+            RuntimeError,
+            msg='get should not work without first running and parsing reults',
+        ):
+            test_p2s.get('test')
+
+    def test_invalid_xyz_error(self):
+        """
+        Attempt to init class with invalid xyz file.
+        """
+        with self.assertRaises(RuntimeError):
+            test_p2s = p2s(
+                'invalid_file.pdb',
+                self.sphere_ids,
+                self.z_ids,
+                self.xz_ids,
+                path_to_sambvcax=self.exe_path,
+                verbose=0,
+            )
 
     def test_full_init(self):
         """
@@ -120,6 +149,8 @@ class Testpy2sambvca(unittest.TestCase):
             test_p2s.path_to_sambvcax,
             "path_to_sambvcax not set correctly.",
         )
+        test_p2s.write_input()
+        test_p2s.clean_files()
 
     def test_partial_init(self):
         """
@@ -330,7 +361,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.z_ids,
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
-            verbose=0,
+            verbose=2,
         )
         test_p2s.run()
         self.assertEqual(
@@ -401,6 +432,16 @@ class Testpy2sambvca(unittest.TestCase):
             test_p2s.get_percent_total_volume(),
             99.9,
         )
+        # invalid key should raise error
+        with self.assertRaises(RuntimeError):
+            test_p2s.get('invalid_key_test')
+        # invalid call to get should raise error
+        with self.assertRaises(RuntimeError):
+            test_p2s.get(
+                'buried_volume',
+                quadrant=True,
+                octant=True,
+            )
 
     @classmethod
     def tearDownClass(self):
@@ -413,6 +454,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
         )
         test_p2s.clean_files()
+        os.rmdir(self.working_dir)
 
 
 if __name__ == '__main__':

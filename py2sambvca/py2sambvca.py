@@ -2,6 +2,8 @@ import subprocess
 import re
 import glob
 import os
+from typing import List
+from warnings import warn
 
 
 class py2sambvca():
@@ -29,20 +31,20 @@ class py2sambvca():
     """
 
     def __init__(self,
-                 xyz_filepath,
-                 sphere_center_atom_ids,
-                 z_ax_atom_ids,
-                 xz_plane_atoms_ids,
-                 atoms_to_delete_ids=None,
-                 sphere_radius=3.5,
-                 displacement=0.0,
-                 mesh_size=0.10,
-                 remove_H=1,
-                 orient_z=1,
-                 write_surf_files=1,
-                 path_to_sambvcax="sambvca.exe",
-                 working_dir=os.getcwd(),
-                 verbose=1):
+                 xyz_filepath: str,
+                 sphere_center_atom_ids: List[int],
+                 z_ax_atom_ids: List[int],
+                 xz_plane_atoms_ids: List[int],
+                 atoms_to_delete_ids: List[int] = None,
+                 sphere_radius: float = 3.5,
+                 displacement: float = 0.0,
+                 mesh_size: float = 0.10,
+                 remove_H: int = 1,
+                 orient_z: int = 1,
+                 write_surf_files: int = 1,
+                 path_to_sambvcax: str = "sambvca.exe",
+                 working_dir: str = os.getcwd(),
+                 verbose: int = 1):
         """
         Wrapper class for py2sambvca functions.
 
@@ -88,8 +90,11 @@ class py2sambvca():
         self.write_surf_files = write_surf_files
 
         # open the xyz file, read the data
-        with open(xyz_filepath, "r") as file:
-            self.xyz_data = file.readlines()
+        if xyz_filepath.endswith('.xyz'):
+            with open(xyz_filepath, "r") as file:
+                self.xyz_data = file.readlines()
+        else:
+            raise RuntimeError(f'Invalid xyz_filepath ({xyz_filepath})')
 
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
@@ -173,6 +178,14 @@ class py2sambvca():
         Retrieves the buried volume from a SambVca output file in the current working directory
         or False if it cannot find it.
         """
+        warn(
+            '''
+get_buried_vol is deprecated and will be removed in py2sambvca 2.0
+Use get_buried_volume instead
+            ''',
+            DeprecationWarning,
+            stacklevel=2,
+        )
         m = self.get_regex(
             r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
         return float(m[1])
@@ -182,8 +195,8 @@ class py2sambvca():
         Remove all input and output files associated with py2sambvca.
 
         """
-        [os.remove(i) for i in glob.glob(os.path.join(
-            self.working_dir, "py2sambvca_input*"))]
+        for f in glob.glob(os.path.join(self.working_dir, "py2sambvca_input*")):
+            os.remove(f)
 
     def parse_output(self):
         """Parse output file for total, quadrant, and octant results.
@@ -435,18 +448,25 @@ class py2sambvca():
         if self.total_results is None:
             raise RuntimeError(
                 f'''
-                Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-                Call p2s.run() or p2s.parse_output() before using this function.
+Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
+Call p2s.run() or p2s.parse_output() before using this function.
                 '''
             )
-        if not (octant or quadrant):
-            return self.total_results[key]
-        elif quadrant:
-            return self.quadrant_results[key]
-        elif octant:
-            return self.octant_results[key]
-        else:
-            return False
+        try:
+            if octant and quadrant:
+                raise RuntimeError(
+                    'Specify either quadrant or octant, not both'
+                )
+            elif quadrant:
+                return self.quadrant_results[key]
+            elif octant:
+                return self.octant_results[key]
+            else:
+                return self.total_results[key]
+        except KeyError as e:
+            if self.verbose:
+                print(e)
+            raise RuntimeError(f'Invalid parameter name "{key}"')
 
     def run(self):
         self.write_input()
