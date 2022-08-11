@@ -9,13 +9,12 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:      
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
-    name: ${{ matrix.os }} Python ${{ matrix.python-version }} Subtest
+    name: Ubuntu Python ${{ matrix.python-version }} Subtest
     steps:
       - uses: actions/checkout@v2
       - name: Setup python

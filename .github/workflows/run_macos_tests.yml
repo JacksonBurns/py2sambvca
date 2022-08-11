@@ -1,4 +1,4 @@
-name: Run Windows Tests
+name: Run Unix Tests
 on:
   push:
     branches: [ main ]
@@ -9,12 +9,12 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2019
-    strategy:
+    runs-on: macos-latest
+    strategy:      
       fail-fast: false
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
-    name: Windows Python ${{ matrix.python-version }} Subtest
+    name: Mac OS Python ${{ matrix.python-version }} Subtest
     steps:
       - uses: actions/checkout@v2
       - name: Setup python
@@ -28,7 +28,7 @@ jobs:
           python -m pip install coverage
       - name: Compile Sambvca21
         run: |
-          gfortran -o sambvca21.exe test/sambvca21.f
+          gfortran-10 -o sambvca21.x test/sambvca21.f
       - name: Run Tests
         run: |
           coverage run --source=. --omit=py2sambvca/__init__.py,setup.py,test/* -m unittest discover
