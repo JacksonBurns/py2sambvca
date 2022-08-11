@@ -160,6 +160,12 @@ class py2sambvca():
         Be sure to write_input() before calling this function.
 
         """
+        if not os.path.exists(self.path_to_sambvcax):
+            raise RuntimeError(
+                f'''
+sambvca executable not found at provided path ({self.path_to_sambvcax})
+                '''
+                )
         try:
             result = subprocess.run(
                 [self.path_to_sambvcax, os.path.join(
