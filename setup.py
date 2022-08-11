@@ -28,6 +28,7 @@ def get_version(rel_path):
 # This call to setup() does all the work
 setup(
     name="py2sambvca",
+    python_requires='>=3.6',
     version=get_version("py2sambvca/__init__.py"),
     description="Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.",
     long_description=README,
@@ -36,7 +37,11 @@ setup(
     author="Jackson Burns",
     license="GNU GPLv3",
     classifiers=[
-        "Programming Language :: Python :: 3"
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     packages=["py2sambvca"],
     include_package_data=True
