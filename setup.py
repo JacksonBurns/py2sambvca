@@ -27,7 +27,7 @@ def get_version(rel_path):
 
 # This call to setup() does all the work
 setup(
-    name="py2sambvca",    
+    name="py2sambvca",
     python_requires='>=3.6',
     version=get_version("py2sambvca/__init__.py"),
     description="Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.",
