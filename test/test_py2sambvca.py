@@ -63,6 +63,22 @@ class Testpy2sambvca(unittest.TestCase):
         ):
             test_p2s.get('test')
 
+    def test_bad_executable_error(self):
+        """
+        Attempt to call calc with a bad exe path
+        """
+        test_p2s = p2s(
+            self.xyz_file,
+            self.sphere_ids,
+            self.z_ids,
+            self.xz_ids,
+            path_to_sambvcax='/path/does/not/exist/sambvca21.x',
+            verbose=2,
+        )
+        with self.assertRaises(RuntimeError):
+            test_p2s.run()
+
+
     def test_invalid_xyz_error(self):
         """
         Attempt to init class with invalid xyz file.
