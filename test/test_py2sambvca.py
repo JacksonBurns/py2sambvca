@@ -261,7 +261,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.z_ids,
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
-            verbose=0,
+            verbose=1,
         )
         test_p2s.write_input()
         test_p2s.calc()
