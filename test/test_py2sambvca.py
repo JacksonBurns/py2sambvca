@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+import shutil
 
 from py2sambvca import p2s
 
@@ -454,7 +455,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
         )
         test_p2s.clean_files()
-        os.rmdir(self.working_dir)
+        shutil.rmtree(self.working_dir)
 
 
 if __name__ == '__main__':
