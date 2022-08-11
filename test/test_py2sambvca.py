@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+import shutil
 
 from py2sambvca import p2s
 
@@ -61,6 +62,21 @@ class Testpy2sambvca(unittest.TestCase):
             msg='get should not work without first running and parsing reults',
         ):
             test_p2s.get('test')
+
+    def test_bad_executable_error(self):
+        """
+        Attempt to call calc with a bad exe path
+        """
+        test_p2s = p2s(
+            self.xyz_file,
+            self.sphere_ids,
+            self.z_ids,
+            self.xz_ids,
+            path_to_sambvcax='/path/does/not/exist/sambvca21.x',
+            verbose=2,
+        )
+        with self.assertRaises(RuntimeError):
+            test_p2s.run()
 
     def test_invalid_xyz_error(self):
         """
@@ -260,7 +276,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.z_ids,
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
-            verbose=0,
+            verbose=1,
         )
         test_p2s.write_input()
         test_p2s.calc()
@@ -454,7 +470,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
         )
         test_p2s.clean_files()
-        os.rmdir(self.working_dir)
+        shutil.rmtree(self.working_dir)
 
 
 if __name__ == '__main__':
