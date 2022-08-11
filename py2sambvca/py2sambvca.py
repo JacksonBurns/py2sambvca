@@ -437,8 +437,8 @@ Use get_buried_volume instead
         except FileNotFoundError:
             raise RuntimeError(
                 f'''
-                Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-                Call p2s.run() or p2s.calc() before using this function.
+Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
+Call p2s.run() or p2s.calc() before using this function.
                 '''
             )
         pattern = re.compile(regex)
