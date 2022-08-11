@@ -78,7 +78,6 @@ class Testpy2sambvca(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             test_p2s.run()
 
-
     def test_invalid_xyz_error(self):
         """
         Attempt to init class with invalid xyz file.
