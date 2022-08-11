@@ -79,7 +79,7 @@ All values for the total complex, quadrants, and octants are available through g
 
 Results can also be accessed through a general getter method: `get()`, `get_quadrant_result()`, and `get_octant_result()`.
 
-All results can also be directly accessed through dictionaries, returned from a call to `run()` or `parse_output()` and availabel through `p2s.total_results`, `p2s.quadrant_results`, and `p2s.octant_results`.
+All results can also be directly accessed through dictionaries, returned from a call to `run()` or `parse_output()` and available through `p2s.total_results`, `p2s.quadrant_results`, and `p2s.octant_results`.
 
 In case there is something else you are looking for, you can use a general purpose `get_regex()` function to return the line containing a pattern.
 
