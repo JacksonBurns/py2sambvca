@@ -4,6 +4,8 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/py2sambvca?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/py2sambvca)
 ![PyPI](https://img.shields.io/pypi/v/py2sambvca)
 ![PyPI - License](https://img.shields.io/pypi/l/py2sambvca)
+![commits since](https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg)
+
 
  Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.
 
