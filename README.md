@@ -1,15 +1,19 @@
-# py2sambvca
-![GitHub Repo stars](https://img.shields.io/github/stars/JacksonBurns/py2sambvca?style=social)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/py2sambvca)
-[![Downloads](https://static.pepy.tech/personalized-badge/py2sambvca?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/py2sambvca)
-![PyPI](https://img.shields.io/pypi/v/py2sambvca)
-![PyPI - License](https://img.shields.io/pypi/l/py2sambvca)
-![commits since](https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py2sambvca)
+<h1 align="center">py2sambvca</h1> 
+<h3 align="center">Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.</h3>
 
- Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.
+<p align="center">
+  <img alt="py2sambvca logo" src="https://github.com/JacksonBurns/py2sambvca/blob/main/py2sambvca_logo.png">
+</p>
 
-![logo](py2sambvca_logo.png)
+<p align="center">
+  <img alt="GitHub Repo Stars" src="https://img.shields.io/github/stars/JacksonBurns/py2sambvca?style=social">
+  <img alt="Total Downloads" src="https://static.pepy.tech/personalized-badge/py2sambvca?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads">
+  <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/py2sambvca">
+  <img alt="commits since" src="https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg">
+  <img alt="PyPI" src="https://img.shields.io/pypi/v/py2sambvca">
+  <img alt="PyPI - License" src="https://img.shields.io/pypi/l/py2sambvca">
+  <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/py2sambvca">
+</p>
 
 ## Installation
 `py2sambvca` is available on PyPI and can be installed like so:
