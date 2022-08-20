@@ -7,8 +7,9 @@
 ![commits since](https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py2sambvca)
 
-
  Simple thin client to interface python scripts with SambVca catalytic pocket Fortran calculator.
+
+![logo](py2sambvca_logo.png)
 
 ## Installation
 `py2sambvca` is available on PyPI and can be installed like so:
