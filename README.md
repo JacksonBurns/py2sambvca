@@ -7,12 +7,12 @@
 
 <p align="center">
   <img alt="GitHub Repo Stars" src="https://img.shields.io/github/stars/JacksonBurns/py2sambvca?style=social">
-  <img alt="Total Downloads" src="https://static.pepy.tech/personalized-badge/py2sambvca?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads">
   <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/py2sambvca">
-  <img alt="commits since" src="https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg">
+  <img alt="Total Downloads" src="https://static.pepy.tech/personalized-badge/py2sambvca?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads">
   <img alt="PyPI" src="https://img.shields.io/pypi/v/py2sambvca">
-  <img alt="PyPI - License" src="https://img.shields.io/pypi/l/py2sambvca">
+  <img alt="commits since" src="https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg">
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/py2sambvca">
+  <img alt="PyPI - License" src="https://img.shields.io/pypi/l/py2sambvca">
 </p>
 
 ## Installation
