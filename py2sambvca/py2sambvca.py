@@ -117,7 +117,7 @@ class py2sambvca():
         self.octant_results = None
 
         # data table
-        self.__radii_table = table_lookup(radii_table)
+        self.__radii_table = table_lookup[radii_table]
 
     def write_input(self):
         """
