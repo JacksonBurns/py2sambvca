@@ -5,9 +5,7 @@ import os
 from typing import List
 from warnings import warn
 
-from py2sambvca.radii_tables import (
-    default_table,
-)
+from py2sambvca.radii_tables import table_lookup
 
 class py2sambvca():
     """
@@ -33,23 +31,24 @@ class py2sambvca():
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
 
-    def __init__(self,
-                 xyz_filepath: str,
-                 sphere_center_atom_ids: List[int],
-                 z_ax_atom_ids: List[int],
-                 xz_plane_atoms_ids: List[int],
-                 atoms_to_delete_ids: List[int] = None,
-                 sphere_radius: float = 3.5,
-                 displacement: float = 0.0,
-                 mesh_size: float = 0.10,
-                 remove_H: int = 1,
-                 orient_z: int = 1,
-                 write_surf_files: int = 1,
-                 path_to_sambvcax: str = "sambvca.exe",
-                 working_dir: str = os.getcwd(),
-                 verbose: int = 1,
-                 radii_table: str = "default",
-                 ):
+    def __init__(
+        self,
+        xyz_filepath: str,
+        sphere_center_atom_ids: List[int],
+        z_ax_atom_ids: List[int],
+        xz_plane_atoms_ids: List[int],
+        atoms_to_delete_ids: List[int] = None,
+        sphere_radius: float = 3.5,
+        displacement: float = 0.0,
+        mesh_size: float = 0.10,
+        remove_H: int = 1,
+        orient_z: int = 1,
+        write_surf_files: int = 1,
+        path_to_sambvcax: str = "sambvca.exe",
+        working_dir: str = os.getcwd(),
+        verbose: int = 1,
+        radii_table: str = "default",
+        ):
         """
         Wrapper class for py2sambvca functions.
 
@@ -117,6 +116,9 @@ class py2sambvca():
         self.quadrant_results = None
         self.octant_results = None
 
+        # data table
+        self.__radii_table = table_lookup(radii_table)
+
     def write_input(self):
         """
         Write input for the Sambvca buried-volume Fortran calculator based on the data entered
@@ -154,7 +156,7 @@ class py2sambvca():
                 "103\n"
             ])
             # write radii
-            file.writelines(radii_table)
+            file.writelines(self.__radii_table)
             # write the atom coordinates
             file.writelines(self.xyz_data)
 
