@@ -35,10 +35,11 @@ jobs:
         run: |
           python -m pip install -e .
           python -m pip install coverage
-      - name: Compile Sambvca21
+      - name: Compile Sambvca21 for Windows
         if: runner.os == 'windows'
         run: |
           gfortran -o sambvca21.exe test/sambvca21.f
+      - name: Compile Sambvca21 for Unix
         if: runner.os != 'windows'
         run: |
           gfortran -o sambvca21.x test/sambvca21.f
