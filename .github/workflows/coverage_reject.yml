@@ -2,7 +2,6 @@ name: Ensure Sufficient Coverage
 on:
   pull_request:
     branches: [ main ]
-    types: [ labeled ]
 
   workflow_dispatch:
 
