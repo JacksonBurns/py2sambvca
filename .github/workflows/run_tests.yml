@@ -1,7 +1,6 @@
-name: Run Unix Tests
+name: Run Tests
 on:
   schedule:
-    # * is a special character in YAML so you have to quote this string
     - cron:  '0 8 * * 1-5'
   push:
     branches: [ main ]
@@ -12,16 +11,23 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
     strategy:      
       fail-fast: false
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-    name: Mac OS Python ${{ matrix.python-version }} Subtest
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
+        exclude:
+          - os: macos-latest
+            python-version: "3.6"
+        os: [ubuntu-latest, windows-latest. macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} Python ${{ matrix.python-version }} Subtest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Link gfortran
+        uses: modflowpy/install-gfortran-action@v1
       - name: Setup python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
@@ -30,8 +36,12 @@ jobs:
           python -m pip install -e .
           python -m pip install coverage
       - name: Compile Sambvca21
+        if: runner.os == 'windows'
         run: |
-          gfortran-10 -o sambvca21.x test/sambvca21.f
+          gfortran -o sambvca21.exe test/sambvca21.f
+        else:
+        run: |
+          gfortran -o sambvca21.x test/sambvca21.f
       - name: Run Tests
         run: |
           coverage run --source=. --omit=py2sambvca/__init__.py,setup.py,test/* -m unittest discover
