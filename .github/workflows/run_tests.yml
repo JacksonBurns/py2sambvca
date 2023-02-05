@@ -39,7 +39,7 @@ jobs:
         if: runner.os == 'windows'
         run: |
           gfortran -o sambvca21.exe test/sambvca21.f
-        else:
+        if: runner.os != 'windows'
         run: |
           gfortran -o sambvca21.x test/sambvca21.f
       - name: Run Tests
