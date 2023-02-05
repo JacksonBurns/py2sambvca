@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     if: |
-      ${{ contains(github.event.pull_request.labels.*.name, "PR: Ready for Review") }}
+      ${{ contains(github.event.pull_request.labels.*.name, "PR Ready for Review") }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
