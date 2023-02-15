@@ -13,6 +13,7 @@
   <img alt="commits since" src="https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg">
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/py2sambvca">
   <img alt="PyPI - License" src="https://img.shields.io/pypi/l/py2sambvca">
+  <img alt="Test Status" src="https://github.com/JacksonBurns/py2sambvca/actions/workflows/run_tests.yml/badge.svg?branch=main&event=schedule">
 </p>
 
 ## Installation
