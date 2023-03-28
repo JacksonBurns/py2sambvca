@@ -6,7 +6,7 @@ from typing import List
 from warnings import warn
 
 
-class py2sambvca():
+class py2sambvca:
     """
     Wrapper class for py2sambvca functions.
 
@@ -30,21 +30,23 @@ class py2sambvca():
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     """
 
-    def __init__(self,
-                 xyz_filepath: str,
-                 sphere_center_atom_ids: List[int],
-                 z_ax_atom_ids: List[int],
-                 xz_plane_atoms_ids: List[int],
-                 atoms_to_delete_ids: List[int] = None,
-                 sphere_radius: float = 3.5,
-                 displacement: float = 0.0,
-                 mesh_size: float = 0.10,
-                 remove_H: int = 1,
-                 orient_z: int = 1,
-                 write_surf_files: int = 1,
-                 path_to_sambvcax: str = "sambvca.exe",
-                 working_dir: str = os.getcwd(),
-                 verbose: int = 1):
+    def __init__(
+        self,
+        xyz_filepath: str,
+        sphere_center_atom_ids: List[int],
+        z_ax_atom_ids: List[int],
+        xz_plane_atoms_ids: List[int],
+        atoms_to_delete_ids: List[int] = None,
+        sphere_radius: float = 3.5,
+        displacement: float = 0.0,
+        mesh_size: float = 0.10,
+        remove_H: int = 1,
+        orient_z: int = 1,
+        write_surf_files: int = 1,
+        path_to_sambvcax: str = "sambvca.exe",
+        working_dir: str = os.getcwd(),
+        verbose: int = 1,
+    ):
         """
         Wrapper class for py2sambvca functions.
 
@@ -90,11 +92,11 @@ class py2sambvca():
         self.write_surf_files = write_surf_files
 
         # open the xyz file, read the data
-        if xyz_filepath.endswith('.xyz'):
+        if xyz_filepath.endswith(".xyz"):
             with open(xyz_filepath, "r") as file:
                 self.xyz_data = file.readlines()
         else:
-            raise RuntimeError(f'Invalid xyz_filepath ({xyz_filepath})')
+            raise RuntimeError(f"Invalid xyz_filepath ({xyz_filepath})")
 
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
@@ -122,32 +124,48 @@ class py2sambvca():
         with open(os.path.join(self.working_dir, "py2sambvca_input.inp"), "w") as file:
             # write atoms to be deleted, if there are any
             if self.atoms_to_delete_ids is not None:
-                file.writelines([
-                    str(self.n_atoms_to_delete) + "\n",
-                    str(self.atoms_to_delete_ids).replace(
-                        ",", "").replace("[", "").replace("]", "") + "\n"
-                ])
+                file.writelines(
+                    [
+                        str(self.n_atoms_to_delete) + "\n",
+                        str(self.atoms_to_delete_ids)
+                        .replace(",", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        + "\n",
+                    ]
+                )
             else:
                 file.write("0\n")
             # write user settings
-            file.writelines([
-                str(self.n_sphere_center_atoms) + "\n",
-                str(self.sphere_center_atom_ids).replace(
-                    ",", "").replace("[", "").replace("]", "") + "\n",
-                str(self.n_z_atoms) + "\n",
-                str(self.z_ax_atom_ids).replace(",", "").replace(
-                    "[", "").replace("]", "") + "\n",
-                str(self.n_xz_plane_atoms) + "\n",
-                str(self.xz_plane_atoms_ids).replace(
-                    ",", "").replace("[", "").replace("]", "") + "\n",
-                str(self.sphere_radius) + "\n",
-                str(self.displacement) + "\n",
-                str(self.mesh_size) + "\n",
-                str(self.remove_H) + "\n",
-                str(self.orient_z) + "\n",
-                str(self.write_surf_files) + "\n",
-                "103\n"
-            ])
+            file.writelines(
+                [
+                    str(self.n_sphere_center_atoms) + "\n",
+                    str(self.sphere_center_atom_ids)
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    + "\n",
+                    str(self.n_z_atoms) + "\n",
+                    str(self.z_ax_atom_ids)
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    + "\n",
+                    str(self.n_xz_plane_atoms) + "\n",
+                    str(self.xz_plane_atoms_ids)
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    + "\n",
+                    str(self.sphere_radius) + "\n",
+                    str(self.displacement) + "\n",
+                    str(self.mesh_size) + "\n",
+                    str(self.remove_H) + "\n",
+                    str(self.orient_z) + "\n",
+                    str(self.write_surf_files) + "\n",
+                    "103\n",
+                ]
+            )
             # write radii
             file.writelines(radii_table)
             # write the atom coordinates
@@ -162,15 +180,17 @@ class py2sambvca():
         """
         if not os.path.exists(self.path_to_sambvcax):
             raise RuntimeError(
-                f'''
-sambvca executable not found at provided path ({self.path_to_sambvcax})
-                '''
+                "sambvca executable not found at provided path ({:s})".format(
+                    self.path_to_sambvcax
                 )
+            )
         try:
             result = subprocess.run(
-                [self.path_to_sambvcax, os.path.join(
-                    self.working_dir, "py2sambvca_input")],
-                stderr=subprocess.DEVNULL
+                [
+                    self.path_to_sambvcax,
+                    os.path.join(self.working_dir, "py2sambvca_input"),
+                ],
+                stderr=subprocess.DEVNULL,
             )
             result.check_returncode()
             return True
@@ -185,15 +205,12 @@ sambvca executable not found at provided path ({self.path_to_sambvcax})
         or False if it cannot find it.
         """
         warn(
-            '''
-get_buried_vol is deprecated and will be removed in py2sambvca 2.0
-Use get_buried_volume instead
-            ''',
+            "get_buried_vol is deprecated and will be removed in py2sambvca 2.0"
+            "Use get_buried_volume instead",
             DeprecationWarning,
             stacklevel=2,
         )
-        m = self.get_regex(
-            r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
+        m = self.get_regex(r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
         return float(m[1])
 
     def clean_files(self):
@@ -212,12 +229,22 @@ Use get_buried_volume instead
             quadrant_results (dict): Quadrant-decomposed results
             octant_results (dict): Octant-decomposed results
         """
-        # total results
-        m1 = self.get_regex(
-            r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+        try:
+            return self._parse_output()
+        except TypeError as te:
+            raise RuntimeError(
+                "Unable to retrieve output from sambvca21 output file ({:s}). "
+                "Did sambvca21 termiante normally?".format(
+                    os.path.join(self.working_dir, "py2sambvca_input.out")
+                )
+            ) from te
 
-        m2 = self.get_regex(
-            r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+    def _parse_output(self):
+        """Helper funciton for parse output to better wrap with try/except."""
+        # total results
+        m1 = self.get_regex(r"^\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$")
+
+        m2 = self.get_regex(r"^\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$")
 
         total_results = {
             "free_volume": float(m1[1]),
@@ -238,8 +265,16 @@ Use get_buried_volume instead
             "percent_free_volume": {},
             "percent_buried_volume": {},
         }
-        octant_regions = [r"SW\-z", r"NW\-z", r"NE\-z", r"SE\-z",
-                          r"SW\+z", r"NW\+z", r"NE\+z", r"SE\+z"]
+        octant_regions = [
+            r"SW\-z",
+            r"NW\-z",
+            r"NE\-z",
+            r"SE\-z",
+            r"SW\+z",
+            r"NW\+z",
+            r"NE\+z",
+            r"SE\+z",
+        ]
         octant_results = quadrant_results.copy()
 
         for region, result_dict in zip(
@@ -248,19 +283,15 @@ Use get_buried_volume instead
         ):
             for r in region:
                 m = self.get_regex(
-                    r"^ " + r +
-                    r"\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
+                    r"^ "
+                    + r
+                    + r"\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
                 )
-                result_dict["free_volume"][
-                    r.replace("\\", "")] = float(m[1])
-                result_dict["buried_volume"][
-                    r.replace("\\", "")] = float(m[2])
-                result_dict["total_volume"][
-                    r.replace("\\", "")] = float(m[3])
-                result_dict["percent_free_volume"][
-                    r.replace("\\", "")] = float(m[4])
-                result_dict["percent_buried_volume"][
-                    r.replace("\\", "")] = float(m[5])
+                result_dict["free_volume"][r.replace("\\", "")] = float(m[1])
+                result_dict["buried_volume"][r.replace("\\", "")] = float(m[2])
+                result_dict["total_volume"][r.replace("\\", "")] = float(m[3])
+                result_dict["percent_free_volume"][r.replace("\\", "")] = float(m[4])
+                result_dict["percent_buried_volume"][r.replace("\\", "")] = float(m[5])
 
         self.total_results = total_results
         self.quadrant_results = quadrant_results
@@ -432,14 +463,16 @@ Use get_buried_volume instead
             regex (str): regex to search
         """
         try:
-            with open(os.path.join(self.working_dir, "py2sambvca_input.out"), 'r') as file:
+            with open(
+                os.path.join(self.working_dir, "py2sambvca_input.out"), "r"
+            ) as file:
                 file_data = file.readlines()
         except FileNotFoundError:
             raise RuntimeError(
-                f'''
-Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-Call p2s.run() or p2s.calc() before using this function.
-                '''
+                "Results not yet retrieved ({:s} not found). "
+                "Call p2s.run() or p2s.calc() before using this function.".format(
+                    os.path.join(self.working_dir, "py2sambvca_input.out")
+                )
             )
         pattern = re.compile(regex)
         for line in file_data:
@@ -453,16 +486,14 @@ Call p2s.run() or p2s.calc() before using this function.
         """
         if self.total_results is None:
             raise RuntimeError(
-                f'''
-Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-Call p2s.run() or p2s.parse_output() before using this function.
-                '''
+                "Results not yet retrieved ({} not found). "
+                "Call p2s.run() or p2s.parse_output() before using this function.".format(
+                    os.path.join(self.working_dir, "py2sambvca_input.out")
+                )
             )
         try:
             if octant and quadrant:
-                raise RuntimeError(
-                    'Specify either quadrant or octant, not both'
-                )
+                raise RuntimeError("Specify either quadrant or octant, not both")
             elif quadrant:
                 return self.quadrant_results[key]
             elif octant:
@@ -483,107 +514,107 @@ Call p2s.run() or p2s.parse_output() before using this function.
 
 
 radii_table = [
-    'H       1.28\n',
-    'HE      1.64\n',
-    'LI      2.13\n',
-    'BE      1.79\n',
-    'B       2.25\n',
-    'C       1.99\n',
-    'N       1.81\n',
-    'O       1.78\n',
-    'F       1.72\n',
-    'NE      1.80\n',
-    'NA      2.66\n',
-    'MG      2.02\n',
-    'AL      2.15\n',
-    'SI      2.46\n',
-    'P       2.11\n',
-    'S       2.11\n',
-    'CL      2.05\n',
-    'AR      2.20\n',
-    'K       3.22\n',
-    'CA      2.70\n',
-    'SC      2.52\n',
-    'TI      2.47\n',
-    'V       2.42\n',
-    'CR      2.41\n',
-    'MN      2.40\n',
-    'FE      2.39\n',
-    'CO      2.34\n',
-    'NI      1.91\n',
-    'CU      1.64\n',
-    'ZN      1.63\n',
-    'GA      2.19\n',
-    'GE      2.47\n',
-    'AS      2.16\n',
-    'SE      2.22\n',
-    'BR      2.16\n',
-    'KR      2.36\n',
-    'RB      3.55\n',
-    'SR      2.91\n',
-    'Y       2.71\n',
-    'ZR      2.61\n',
-    'NB      2.55\n',
-    'MO      2.54\n',
-    'TC      2.53\n',
-    'RU      2.49\n',
-    'RH      2.46\n',
-    'PD      1.91\n',
-    'AG      2.01\n',
-    'CD      1.85\n',
-    'IN      2.26\n',
-    'SN      2.54\n',
-    'SB      2.41\n',
-    'TE      2.41\n',
-    'I       2.32\n',
-    'XE      2.53\n',
-    'CS      4.01\n',
-    'BA      3.14\n',
-    'LA      2.84\n',
-    'CE      2.83\n',
-    'PR      2.81\n',
-    'ND      2.80\n',
-    'PM      2.78\n',
-    'SM      2.76\n',
-    'EU      2.75\n',
-    'GD      2.74\n',
-    'TB      2.73\n',
-    'DY      2.70\n',
-    'HO      2.69\n',
-    'ER      2.68\n',
-    'TM      2.66\n',
-    'YB      2.64\n',
-    'LU      2.62\n',
-    'HF      2.61\n',
-    'TA      2.60\n',
-    'W       2.55\n',
-    'RE      2.53\n',
-    'OS      2.53\n',
-    'IR      2.49\n',
-    'PT      2.01\n',
-    'AU      1.94\n',
-    'HG      1.81\n',
-    'TL      2.29\n',
-    'PB      2.36\n',
-    'BI      2.42\n',
-    'PO      2.30\n',
-    'AT      2.36\n',
-    'RN      2.57\n',
-    'FR      4.07\n',
-    'RA      3.31\n',
-    'AC      2.89\n',
-    'TH      2.87\n',
-    'PA      2.84\n',
-    'U       2.18\n',
-    'NP      2.80\n',
-    'PU      2.84\n',
-    'AM      2.85\n',
-    'CM      2.87\n',
-    'BK      2.85\n',
-    'CF      2.87\n',
-    'ES      2.87\n',
-    'FM      2.87\n',
-    'M       2.88\n',
-    'NO      2.88\n',
-    'LR      2.88\n'
+    "H       1.28\n",
+    "HE      1.64\n",
+    "LI      2.13\n",
+    "BE      1.79\n",
+    "B       2.25\n",
+    "C       1.99\n",
+    "N       1.81\n",
+    "O       1.78\n",
+    "F       1.72\n",
+    "NE      1.80\n",
+    "NA      2.66\n",
+    "MG      2.02\n",
+    "AL      2.15\n",
+    "SI      2.46\n",
+    "P       2.11\n",
+    "S       2.11\n",
+    "CL      2.05\n",
+    "AR      2.20\n",
+    "K       3.22\n",
+    "CA      2.70\n",
+    "SC      2.52\n",
+    "TI      2.47\n",
+    "V       2.42\n",
+    "CR      2.41\n",
+    "MN      2.40\n",
+    "FE      2.39\n",
+    "CO      2.34\n",
+    "NI      1.91\n",
+    "CU      1.64\n",
+    "ZN      1.63\n",
+    "GA      2.19\n",
+    "GE      2.47\n",
+    "AS      2.16\n",
+    "SE      2.22\n",
+    "BR      2.16\n",
+    "KR      2.36\n",
+    "RB      3.55\n",
+    "SR      2.91\n",
+    "Y       2.71\n",
+    "ZR      2.61\n",
+    "NB      2.55\n",
+    "MO      2.54\n",
+    "TC      2.53\n",
+    "RU      2.49\n",
+    "RH      2.46\n",
+    "PD      1.91\n",
+    "AG      2.01\n",
+    "CD      1.85\n",
+    "IN      2.26\n",
+    "SN      2.54\n",
+    "SB      2.41\n",
+    "TE      2.41\n",
+    "I       2.32\n",
+    "XE      2.53\n",
+    "CS      4.01\n",
+    "BA      3.14\n",
+    "LA      2.84\n",
+    "CE      2.83\n",
+    "PR      2.81\n",
+    "ND      2.80\n",
+    "PM      2.78\n",
+    "SM      2.76\n",
+    "EU      2.75\n",
+    "GD      2.74\n",
+    "TB      2.73\n",
+    "DY      2.70\n",
+    "HO      2.69\n",
+    "ER      2.68\n",
+    "TM      2.66\n",
+    "YB      2.64\n",
+    "LU      2.62\n",
+    "HF      2.61\n",
+    "TA      2.60\n",
+    "W       2.55\n",
+    "RE      2.53\n",
+    "OS      2.53\n",
+    "IR      2.49\n",
+    "PT      2.01\n",
+    "AU      1.94\n",
+    "HG      1.81\n",
+    "TL      2.29\n",
+    "PB      2.36\n",
+    "BI      2.42\n",
+    "PO      2.30\n",
+    "AT      2.36\n",
+    "RN      2.57\n",
+    "FR      4.07\n",
+    "RA      3.31\n",
+    "AC      2.89\n",
+    "TH      2.87\n",
+    "PA      2.84\n",
+    "U       2.18\n",
+    "NP      2.80\n",
+    "PU      2.84\n",
+    "AM      2.85\n",
+    "CM      2.87\n",
+    "BK      2.85\n",
+    "CF      2.87\n",
+    "ES      2.87\n",
+    "FM      2.87\n",
+    "M       2.88\n",
+    "NO      2.88\n",
+    "LR      2.88\n",
 ]
