@@ -1,0 +1,180 @@
+
+ ---------------------------------------------------
+ |                                                 |
+ |              S A M B V C A  2.1                 |
+ |                                                 |
+ |              Release 29-06-2019                 |
+ |                                                 |
+ |       Molecular Buried Volume Calculator        |
+ |                                                 |
+ |  http://www.molnac.unisa.it/OM-tools/SambVca    |
+ |                                                 |
+ |  L. Cavallo & Z. Cao  Email: lcavallo@unisa.it  |
+ |                                                 |
+ ---------------------------------------------------
+
+Checking: No. of atoms to be removed :                     0
+Checking: No. of atoms defining the sphere center :        1
+Checking: Atoms defining the sphere center :
+   65
+Checking : No. of atoms defining the Z-axis :              2
+   65   64
+Checking : No. of atoms defining the XZ-plane :            3
+   64   65   82
+ Checking: Molecule will be aligned along the Z+ direction
+ Checking: Vbur sphere radius :            7.500
+ Checking: Displacement from origin :      0.000
+ Checking: Bin width :                     0.100
+ Checking: Removing H atoms
+ Checking: Outputting steric map
+ Checking: No. of atom types in your database :         103
+ Checking: Atom labels and radius in the database :
+H    1.280
+HE   1.640
+LI   2.130
+BE   1.790
+B    2.250
+C    1.990
+N    1.810
+O    1.780
+F    1.720
+NE   1.800
+NA   2.660
+MG   2.020
+AL   2.150
+SI   2.460
+P    2.110
+S    2.110
+CL   2.050
+AR   2.200
+K    3.220
+CA   2.700
+SC   2.520
+TI   2.470
+V    2.420
+CR   2.410
+MN   2.400
+FE   2.390
+CO   2.340
+NI   1.910
+CU   1.640
+ZN   1.630
+GA   2.190
+GE   2.470
+AS   2.160
+SE   2.220
+BR   2.160
+KR   2.360
+RB   3.550
+SR   2.910
+Y    2.710
+ZR   2.610
+NB   2.550
+MO   2.540
+TC   2.530
+RU   2.490
+RH   2.460
+PD   1.910
+AG   2.010
+CD   1.850
+IN   2.260
+SN   2.540
+SB   2.410
+TE   2.410
+I    2.320
+XE   2.530
+CS   4.010
+BA   3.140
+LA   2.840
+CE   2.830
+PR   2.810
+ND   2.800
+PM   2.780
+SM   2.760
+EU   2.750
+GD   2.740
+TB   2.730
+DY   2.700
+HO   2.690
+ER   2.680
+TM   2.660
+YB   2.640
+LU   2.620
+HF   2.610
+TA   2.600
+W    2.550
+RE   2.530
+OS   2.530
+IR   2.490
+PT   2.010
+AU   1.940
+HG   1.810
+TL   2.290
+PB   2.360
+BI   2.420
+PO   2.300
+AT   2.360
+RN   2.570
+FR   4.070
+RA   3.310
+AC   2.890
+TH   2.870
+PA   2.840
+U    2.180
+NP   2.800
+PU   2.840
+AM   2.850
+CM   2.870
+BK   2.850
+CF   2.870
+ES   2.870
+FM   2.870
+M    2.880
+NO   2.880
+LR   2.880
+
+Checking: No. of atoms of input frame :                   83
+
+Checking: Coordinates of input frame :
+GEOMETRY
+
+Results: Coordinates of rotated frame :
+GEOMETRY
+
+Results : Volumes in Angs^3
+
+       N of voxels examined :         1767063
+       Volume of voxel      :       0.0010000
+
+
+   V Free    V Buried   V Total   V Exact
+    1169.4     597.3    1766.7    1767.1
+
+    Buried volume =     597.29 Angs^3
+
+   %V Free   %V Buried  % V Tot/V Ex
+      66.2      33.8     100.0
+
+    The %V Bur of the molecule is:     33.8
+
+                 Quadrants analysis
+ Quadrant     V f     V b     V t    %V f    %V b
+ SW         210.1   231.5   441.7    47.6    52.4
+ NW         373.5    68.2   441.7    84.6    15.4
+ NE         276.6   165.1   441.7    62.6    37.4
+ SE         309.2   132.5   441.7    70.0    30.0
+
+                   Octants analysis
+ Octant       V f      V b    V t    %V f    %V b
+ SW-z       137.4    83.5   220.8    62.2    37.8
+ NW-z       210.0    10.8   220.8    95.1     4.9
+ NE-z       206.3    14.5   220.8    93.4     6.6
+ SE-z       175.5    45.3   220.8    79.5    20.5
+ SW+z        72.7   148.1   220.8    32.9    67.1
+ NW+z       163.5    57.4   220.8    74.0    26.0
+ NE+z        70.3   150.6   220.8    31.8    68.2
+ SE+z       133.7    87.2   220.8    60.5    39.5
+
+  No. of frames analyzed :            1
+
+ Normal termination
