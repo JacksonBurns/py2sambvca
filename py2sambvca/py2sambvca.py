@@ -7,7 +7,7 @@ from warnings import warn
 
 from py2sambvca.radii_tables import table_lookup
 
-class py2sambvca():
+class py2sambvca:
     """
     Wrapper class for py2sambvca functions.
 
@@ -48,7 +48,7 @@ class py2sambvca():
         working_dir: str = os.getcwd(),
         verbose: int = 1,
         radii_table: str = "default",
-        ):
+    ):
         """
         Wrapper class for py2sambvca functions.
 
@@ -94,11 +94,11 @@ class py2sambvca():
         self.write_surf_files = write_surf_files
 
         # open the xyz file, read the data
-        if xyz_filepath.endswith('.xyz'):
+        if xyz_filepath.endswith(".xyz"):
             with open(xyz_filepath, "r") as file:
                 self.xyz_data = file.readlines()
         else:
-            raise RuntimeError(f'Invalid xyz_filepath ({xyz_filepath})')
+            raise RuntimeError(f"Invalid xyz_filepath ({xyz_filepath})")
 
         # assign the path to the calculator
         self.path_to_sambvcax = path_to_sambvcax
@@ -129,32 +129,48 @@ class py2sambvca():
         with open(os.path.join(self.working_dir, "py2sambvca_input.inp"), "w") as file:
             # write atoms to be deleted, if there are any
             if self.atoms_to_delete_ids is not None:
-                file.writelines([
-                    str(self.n_atoms_to_delete) + "\n",
-                    str(self.atoms_to_delete_ids).replace(
-                        ",", "").replace("[", "").replace("]", "") + "\n"
-                ])
+                file.writelines(
+                    [
+                        str(self.n_atoms_to_delete) + "\n",
+                        str(self.atoms_to_delete_ids)
+                        .replace(",", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        + "\n",
+                    ]
+                )
             else:
                 file.write("0\n")
             # write user settings
-            file.writelines([
-                str(self.n_sphere_center_atoms) + "\n",
-                str(self.sphere_center_atom_ids).replace(
-                    ",", "").replace("[", "").replace("]", "") + "\n",
-                str(self.n_z_atoms) + "\n",
-                str(self.z_ax_atom_ids).replace(",", "").replace(
-                    "[", "").replace("]", "") + "\n",
-                str(self.n_xz_plane_atoms) + "\n",
-                str(self.xz_plane_atoms_ids).replace(
-                    ",", "").replace("[", "").replace("]", "") + "\n",
-                str(self.sphere_radius) + "\n",
-                str(self.displacement) + "\n",
-                str(self.mesh_size) + "\n",
-                str(self.remove_H) + "\n",
-                str(self.orient_z) + "\n",
-                str(self.write_surf_files) + "\n",
-                "103\n"
-            ])
+            file.writelines(
+                [
+                    str(self.n_sphere_center_atoms) + "\n",
+                    str(self.sphere_center_atom_ids)
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    + "\n",
+                    str(self.n_z_atoms) + "\n",
+                    str(self.z_ax_atom_ids)
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    + "\n",
+                    str(self.n_xz_plane_atoms) + "\n",
+                    str(self.xz_plane_atoms_ids)
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    + "\n",
+                    str(self.sphere_radius) + "\n",
+                    str(self.displacement) + "\n",
+                    str(self.mesh_size) + "\n",
+                    str(self.remove_H) + "\n",
+                    str(self.orient_z) + "\n",
+                    str(self.write_surf_files) + "\n",
+                    "103\n",
+                ]
+            )
             # write radii
             file.writelines(self.__radii_table)
             # write the atom coordinates
@@ -169,15 +185,17 @@ class py2sambvca():
         """
         if not os.path.exists(self.path_to_sambvcax):
             raise RuntimeError(
-                f'''
-sambvca executable not found at provided path ({self.path_to_sambvcax})
-                '''
+                "sambvca executable not found at provided path ({:s})".format(
+                    self.path_to_sambvcax
                 )
+            )
         try:
             result = subprocess.run(
-                [self.path_to_sambvcax, os.path.join(
-                    self.working_dir, "py2sambvca_input")],
-                stderr=subprocess.DEVNULL
+                [
+                    self.path_to_sambvcax,
+                    os.path.join(self.working_dir, "py2sambvca_input"),
+                ],
+                stderr=subprocess.DEVNULL,
             )
             result.check_returncode()
             return True
@@ -192,15 +210,12 @@ sambvca executable not found at provided path ({self.path_to_sambvcax})
         or False if it cannot find it.
         """
         warn(
-            '''
-get_buried_vol is deprecated and will be removed in py2sambvca 2.0
-Use get_buried_volume instead
-            ''',
+            "get_buried_vol is deprecated and will be removed in py2sambvca 2.0"
+            "Use get_buried_volume instead",
             DeprecationWarning,
             stacklevel=2,
         )
-        m = self.get_regex(
-            r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
+        m = self.get_regex(r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
         return float(m[1])
 
     def clean_files(self):
@@ -219,12 +234,22 @@ Use get_buried_volume instead
             quadrant_results (dict): Quadrant-decomposed results
             octant_results (dict): Octant-decomposed results
         """
-        # total results
-        m1 = self.get_regex(
-            r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+        try:
+            return self._parse_output()
+        except TypeError as te:
+            raise RuntimeError(
+                "Unable to retrieve output from sambvca21 output file ({:s}). "
+                "Did sambvca21 termiante normally?".format(
+                    os.path.join(self.working_dir, "py2sambvca_input.out")
+                )
+            ) from te
 
-        m2 = self.get_regex(
-            r"^[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)[ ]{5,6}(\d*\.\d*)$")
+    def _parse_output(self):
+        """Helper funciton for parse output to better wrap with try/except."""
+        # total results
+        m1 = self.get_regex(r"^\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$")
+
+        m2 = self.get_regex(r"^\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$")
 
         total_results = {
             "free_volume": float(m1[1]),
@@ -245,8 +270,16 @@ Use get_buried_volume instead
             "percent_free_volume": {},
             "percent_buried_volume": {},
         }
-        octant_regions = [r"SW\-z", r"NW\-z", r"NE\-z", r"SE\-z",
-                          r"SW\+z", r"NW\+z", r"NE\+z", r"SE\+z"]
+        octant_regions = [
+            r"SW\-z",
+            r"NW\-z",
+            r"NE\-z",
+            r"SE\-z",
+            r"SW\+z",
+            r"NW\+z",
+            r"NE\+z",
+            r"SE\+z",
+        ]
         octant_results = quadrant_results.copy()
 
         for region, result_dict in zip(
@@ -255,19 +288,15 @@ Use get_buried_volume instead
         ):
             for r in region:
                 m = self.get_regex(
-                    r"^ " + r +
-                    r"\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
+                    r"^ "
+                    + r
+                    + r"\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)\s*(\d*\.\d*)$"
                 )
-                result_dict["free_volume"][
-                    r.replace("\\", "")] = float(m[1])
-                result_dict["buried_volume"][
-                    r.replace("\\", "")] = float(m[2])
-                result_dict["total_volume"][
-                    r.replace("\\", "")] = float(m[3])
-                result_dict["percent_free_volume"][
-                    r.replace("\\", "")] = float(m[4])
-                result_dict["percent_buried_volume"][
-                    r.replace("\\", "")] = float(m[5])
+                result_dict["free_volume"][r.replace("\\", "")] = float(m[1])
+                result_dict["buried_volume"][r.replace("\\", "")] = float(m[2])
+                result_dict["total_volume"][r.replace("\\", "")] = float(m[3])
+                result_dict["percent_free_volume"][r.replace("\\", "")] = float(m[4])
+                result_dict["percent_buried_volume"][r.replace("\\", "")] = float(m[5])
 
         self.total_results = total_results
         self.quadrant_results = quadrant_results
@@ -439,14 +468,16 @@ Use get_buried_volume instead
             regex (str): regex to search
         """
         try:
-            with open(os.path.join(self.working_dir, "py2sambvca_input.out"), 'r') as file:
+            with open(
+                os.path.join(self.working_dir, "py2sambvca_input.out"), "r"
+            ) as file:
                 file_data = file.readlines()
         except FileNotFoundError:
             raise RuntimeError(
-                f'''
-Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-Call p2s.run() or p2s.calc() before using this function.
-                '''
+                "Results not yet retrieved ({:s} not found). "
+                "Call p2s.run() or p2s.calc() before using this function.".format(
+                    os.path.join(self.working_dir, "py2sambvca_input.out")
+                )
             )
         pattern = re.compile(regex)
         for line in file_data:
@@ -460,16 +491,14 @@ Call p2s.run() or p2s.calc() before using this function.
         """
         if self.total_results is None:
             raise RuntimeError(
-                f'''
-Results not yet retrieved ({os.path.join(self.working_dir,"py2sambvca_input.out")} not found).
-Call p2s.run() or p2s.parse_output() before using this function.
-                '''
+                "Results not yet retrieved ({} not found). "
+                "Call p2s.run() or p2s.parse_output() before using this function.".format(
+                    os.path.join(self.working_dir, "py2sambvca_input.out")
+                )
             )
         try:
             if octant and quadrant:
-                raise RuntimeError(
-                    'Specify either quadrant or octant, not both'
-                )
+                raise RuntimeError("Specify either quadrant or octant, not both")
             elif quadrant:
                 return self.quadrant_results[key]
             elif octant:
@@ -487,5 +516,4 @@ Call p2s.run() or p2s.parse_output() before using this function.
         self.parse_output()
         self.clean_files()
         return self.total_results, self.quadrant_results, self.octant_results
-
 

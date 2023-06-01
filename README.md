@@ -13,6 +13,7 @@
   <img alt="commits since" src="https://img.shields.io/github/commits-since/JacksonBurns/py2sambvca/latest.svg">
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/py2sambvca">
   <img alt="PyPI - License" src="https://img.shields.io/pypi/l/py2sambvca">
+  <img alt="Test Status" src="https://github.com/JacksonBurns/py2sambvca/actions/workflows/run_tests.yml/badge.svg?branch=main&event=schedule">
 </p>
 
 ## Installation
@@ -28,6 +29,8 @@ pip install py2sambvca
 
 You can download the source code [on the `Sambvca` webserver](https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html) and compile it using [`gfortran`](https://gcc.gnu.org/wiki/GFortranBinaries).
 
+By default, `py2sambvca` expects the executable to be present in the `cwd` and named `sambvca21.exe` on Windows or `sambvca21.x` on Unix-based systems. optionally, the filepath to your executable can be specified as shown below.
+
 ## Usage
 After installation, `py2sambvca` can be added to a Python script via `import` and instantiated:
 ```python
@@ -41,8 +44,6 @@ nhc_p2s = p2s(
     path_to_sambvcax="sambvca21.exe",
 )
 ```
-`path_to_sambvca` is an optional parameter that dictates where your sambvca executable is. By default, `py2sambvca` will assume that the executable is located in the current working directory and call it as `sambvca21.exe`.
-
 
 The required input parameters are shown below:
  - `xyz_filepath` (str): Location of .xyz molecular coordinates file for writing input data

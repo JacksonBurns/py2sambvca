@@ -13,8 +13,7 @@ class Testpy2sambvca(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        """Set input attirbutes for py2sambvca.
-        """
+        """Set input attirbutes for py2sambvca."""
         cwd = os.getcwd()
         self.xyz_file = os.path.join(cwd, "test", "data", "nhc.xyz")
         self.sphere_ids = [22]
@@ -53,15 +52,15 @@ class Testpy2sambvca(unittest.TestCase):
         # getters raise errors without output files
         with self.assertRaises(
             RuntimeError,
-            msg='get_regex should not work without first running',
+            msg="get_regex should not work without first running",
         ):
-            test_p2s.get_regex('test')
+            test_p2s.get_regex("test")
 
         with self.assertRaises(
             RuntimeError,
-            msg='get should not work without first running and parsing reults',
+            msg="get should not work without first running and parsing reults",
         ):
-            test_p2s.get('test')
+            test_p2s.get("test")
 
     def test_bad_executable_error(self):
         """
@@ -72,7 +71,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.sphere_ids,
             self.z_ids,
             self.xz_ids,
-            path_to_sambvcax='/path/does/not/exist/sambvca21.x',
+            path_to_sambvcax="/path/does/not/exist/sambvca21.x",
             verbose=2,
         )
         with self.assertRaises(RuntimeError):
@@ -84,7 +83,7 @@ class Testpy2sambvca(unittest.TestCase):
         """
         with self.assertRaises(RuntimeError):
             test_p2s = p2s(
-                'invalid_file.pdb',
+                "invalid_file.pdb",
                 self.sphere_ids,
                 self.z_ids,
                 self.xz_ids,
@@ -167,6 +166,25 @@ class Testpy2sambvca(unittest.TestCase):
         )
         test_p2s.write_input()
         test_p2s.clean_files()
+
+    def test_canot_retrieve_error(self):
+        """
+        py2sambvca should provide a helpful error when it cannot retrieve data
+        """
+        test_p2s = p2s(
+            self.xyz_file,
+            self.sphere_ids,
+            self.z_ids,
+            self.xz_ids,
+            working_dir=self.working_dir,
+        )
+        # mimic an unsuccessful run
+        blank_file = os.path.join(self.working_dir, "py2sambvca_input.out")
+        open(blank_file, "w").close()
+        # would nromally result in a TypeError from py2sambvca trying to use a nonexistent regex match
+        with self.assertRaises(RuntimeError):
+            test_p2s.parse_output()
+        os.remove(blank_file)
 
     def test_partial_init(self):
         """
@@ -324,11 +342,9 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
             verbose=0,
-            working_dir=self.working_dir
+            working_dir=self.working_dir,
         )
-        self.assertTrue(
-            os.path.exists(self.working_dir)
-        )
+        self.assertTrue(os.path.exists(self.working_dir))
 
     def test_existing_working_dir(self):
         """
@@ -341,15 +357,11 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
             verbose=0,
-            working_dir=self.working_dir
+            working_dir=self.working_dir,
         )
         test_p2s.write_input()
         self.assertTrue(
-            os.path.exists(
-                os.path.join(
-                    self.working_dir, "py2sambvca_input.inp"
-                )
-            )
+            os.path.exists(os.path.join(self.working_dir, "py2sambvca_input.inp"))
         )
 
     def test_run_different_dir(self):
@@ -363,7 +375,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
             verbose=0,
-            working_dir=self.working_dir
+            working_dir=self.working_dir,
         )
         test_p2s.run()
 
@@ -381,43 +393,43 @@ class Testpy2sambvca(unittest.TestCase):
         )
         test_p2s.run()
         self.assertEqual(
-            test_p2s.get_quadrant_free_volume()['SW'],
+            test_p2s.get_quadrant_free_volume()["SW"],
             21.0,
         )
         self.assertEqual(
-            test_p2s.get_quadrant_buried_volume()['SW'],
+            test_p2s.get_quadrant_buried_volume()["SW"],
             23.9,
         )
         self.assertEqual(
-            test_p2s.get_quadrant_total_volume()['NW'],
+            test_p2s.get_quadrant_total_volume()["NW"],
             44.9,
         )
         self.assertEqual(
-            test_p2s.get_quadrant_percent_buried_volume()['SE'],
+            test_p2s.get_quadrant_percent_buried_volume()["SE"],
             58.1,
         )
         self.assertEqual(
-            test_p2s.get_quadrant_percent_free_volume()['SW'],
+            test_p2s.get_quadrant_percent_free_volume()["SW"],
             53.2,
         )
         self.assertEqual(
-            test_p2s.get_octant_free_volume()['SW-z'],
+            test_p2s.get_octant_free_volume()["SW-z"],
             16.7,
         )
         self.assertEqual(
-            test_p2s.get_octant_buried_volume()['SW+z'],
+            test_p2s.get_octant_buried_volume()["SW+z"],
             18.1,
         )
         self.assertEqual(
-            test_p2s.get_octant_total_volume()['SE-z'],
+            test_p2s.get_octant_total_volume()["SE-z"],
             22.4,
         )
         self.assertEqual(
-            test_p2s.get_octant_percent_buried_volume()['SE+z'],
+            test_p2s.get_octant_percent_buried_volume()["SE+z"],
             90.2,
         )
         self.assertEqual(
-            test_p2s.get_octant_percent_free_volume()['NW+z'],
+            test_p2s.get_octant_percent_free_volume()["NW+z"],
             90.4,
         )
         self.assertEqual(
@@ -450,19 +462,18 @@ class Testpy2sambvca(unittest.TestCase):
         )
         # invalid key should raise error
         with self.assertRaises(RuntimeError):
-            test_p2s.get('invalid_key_test')
+            test_p2s.get("invalid_key_test")
         # invalid call to get should raise error
         with self.assertRaises(RuntimeError):
             test_p2s.get(
-                'buried_volume',
+                "buried_volume",
                 quadrant=True,
                 octant=True,
             )
 
     @classmethod
     def tearDownClass(self):
-        """Clean up the mess.
-        """
+        """Clean up the mess."""
         test_p2s = p2s(
             self.xyz_file,
             self.sphere_ids,
@@ -473,5 +484,5 @@ class Testpy2sambvca(unittest.TestCase):
         shutil.rmtree(self.working_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

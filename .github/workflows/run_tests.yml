@@ -1,0 +1,53 @@
+name: Run Tests
+on:
+  schedule:
+    - cron:  '0 8 * * 1-5'
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:      
+      fail-fast: false
+      matrix:
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
+        exclude:
+          - os: macos-latest
+            python-version: "3.6"
+          - os: ubuntu-latest
+            python-version: "3.6"
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} Python ${{ matrix.python-version }} Subtest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Link gfortran
+        uses: modflowpy/install-gfortran-action@v1
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Install Dependencies
+        run: |
+          python -m pip install -e .
+          python -m pip install coverage
+      - name: Compile Sambvca21 for Windows
+        if: runner.os == 'windows'
+        run: |
+          gfortran -o sambvca21.exe test/sambvca21.f
+      - name: Compile Sambvca21 for Unix
+        if: runner.os != 'windows'
+        run: |
+          gfortran -o sambvca21.x test/sambvca21.f
+      - name: Run Tests
+        run: |
+          coverage run --source=. --omit=py2sambvca/__init__.py,setup.py,test/* -m unittest discover
+      - name: Show Coverage
+        run: |
+          coverage report -m
