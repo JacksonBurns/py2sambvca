@@ -2,8 +2,10 @@ import subprocess
 import re
 import glob
 import os
-from typing import List
+from typing import List, Union
 from warnings import warn
+
+from py2sambvca.radii_tables import table_lookup, format_radii_table
 
 
 class py2sambvca:
@@ -28,6 +30,7 @@ class py2sambvca:
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
     working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
+    radii_table (dict or str): atomic symbols (ie. H, LI) and radii (Angstrom), "default" (bondii radii*1.17), or "vdw" for van Der Waals
     """
 
     def __init__(
@@ -46,6 +49,7 @@ class py2sambvca:
         path_to_sambvcax: str = "sambvca.exe",
         working_dir: str = os.getcwd(),
         verbose: int = 1,
+        radii_table: Union[str, dict] = "default",
     ):
         """
         Wrapper class for py2sambvca functions.
@@ -68,6 +72,7 @@ class py2sambvca:
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
         working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
         verbose (int): 0 for no output, 1 for some output, 2 for the most output
+        radii_table (dict or str): atomic symbols (ie. H, LI) and radii (Angstrom), "default" (bondii radii*1.17), or "vdw" for van Der Waals
         """
         # if atoms are requested to be deleted, assign them and the number of them
         if atoms_to_delete_ids is not None:
@@ -113,6 +118,11 @@ class py2sambvca:
         self.total_results = None
         self.quadrant_results = None
         self.octant_results = None
+
+        # data table
+        self.__radii_table = format_radii_table(
+            table_lookup[radii_table] if type(radii_table) is str else radii_table
+        )
 
     def write_input(self):
         """
@@ -167,7 +177,7 @@ class py2sambvca:
                 ]
             )
             # write radii
-            file.writelines(radii_table)
+            file.writelines(self.__radii_table)
             # write the atom coordinates
             file.writelines(self.xyz_data)
 
@@ -511,110 +521,3 @@ class py2sambvca:
         self.parse_output()
         self.clean_files()
         return self.total_results, self.quadrant_results, self.octant_results
-
-
-radii_table = [
-    "H       1.28\n",
-    "HE      1.64\n",
-    "LI      2.13\n",
-    "BE      1.79\n",
-    "B       2.25\n",
-    "C       1.99\n",
-    "N       1.81\n",
-    "O       1.78\n",
-    "F       1.72\n",
-    "NE      1.80\n",
-    "NA      2.66\n",
-    "MG      2.02\n",
-    "AL      2.15\n",
-    "SI      2.46\n",
-    "P       2.11\n",
-    "S       2.11\n",
-    "CL      2.05\n",
-    "AR      2.20\n",
-    "K       3.22\n",
-    "CA      2.70\n",
-    "SC      2.52\n",
-    "TI      2.47\n",
-    "V       2.42\n",
-    "CR      2.41\n",
-    "MN      2.40\n",
-    "FE      2.39\n",
-    "CO      2.34\n",
-    "NI      1.91\n",
-    "CU      1.64\n",
-    "ZN      1.63\n",
-    "GA      2.19\n",
-    "GE      2.47\n",
-    "AS      2.16\n",
-    "SE      2.22\n",
-    "BR      2.16\n",
-    "KR      2.36\n",
-    "RB      3.55\n",
-    "SR      2.91\n",
-    "Y       2.71\n",
-    "ZR      2.61\n",
-    "NB      2.55\n",
-    "MO      2.54\n",
-    "TC      2.53\n",
-    "RU      2.49\n",
-    "RH      2.46\n",
-    "PD      1.91\n",
-    "AG      2.01\n",
-    "CD      1.85\n",
-    "IN      2.26\n",
-    "SN      2.54\n",
-    "SB      2.41\n",
-    "TE      2.41\n",
-    "I       2.32\n",
-    "XE      2.53\n",
-    "CS      4.01\n",
-    "BA      3.14\n",
-    "LA      2.84\n",
-    "CE      2.83\n",
-    "PR      2.81\n",
-    "ND      2.80\n",
-    "PM      2.78\n",
-    "SM      2.76\n",
-    "EU      2.75\n",
-    "GD      2.74\n",
-    "TB      2.73\n",
-    "DY      2.70\n",
-    "HO      2.69\n",
-    "ER      2.68\n",
-    "TM      2.66\n",
-    "YB      2.64\n",
-    "LU      2.62\n",
-    "HF      2.61\n",
-    "TA      2.60\n",
-    "W       2.55\n",
-    "RE      2.53\n",
-    "OS      2.53\n",
-    "IR      2.49\n",
-    "PT      2.01\n",
-    "AU      1.94\n",
-    "HG      1.81\n",
-    "TL      2.29\n",
-    "PB      2.36\n",
-    "BI      2.42\n",
-    "PO      2.30\n",
-    "AT      2.36\n",
-    "RN      2.57\n",
-    "FR      4.07\n",
-    "RA      3.31\n",
-    "AC      2.89\n",
-    "TH      2.87\n",
-    "PA      2.84\n",
-    "U       2.18\n",
-    "NP      2.80\n",
-    "PU      2.84\n",
-    "AM      2.85\n",
-    "CM      2.87\n",
-    "BK      2.85\n",
-    "CF      2.87\n",
-    "ES      2.87\n",
-    "FM      2.87\n",
-    "M       2.88\n",
-    "NO      2.88\n",
-    "LR      2.88\n",
-]
