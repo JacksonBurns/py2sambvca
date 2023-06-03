@@ -22,12 +22,12 @@
 pip install py2sambvca
 ```
 
-`py2sambvca` has __zero__ external depdencies.
+`py2sambvca` has __zero__ external dependencies.
 
-### Downloading and Compiling `Sambvca`
-`py2sambvca` can read and write input and output files for `Sambvca` without the actual program in place, but in order to run input files you must have an executable `sambvca21.exe` (or similar) somewhere on your machine.
+### Downloading and Compiling `SambVca`
+`py2sambvca` can read and write input and output files for `SambVca` without the actual program in place, but in order to run input files you must have an executable `sambvca21.exe` (or similar) somewhere on your machine.
 
-You can download the source code [on the `Sambvca` webserver](https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html) and compile it using [`gfortran`](https://gcc.gnu.org/wiki/GFortranBinaries).
+You can download the source code [on the `SambVca` webserver](https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html) and compile it using [`gfortran`](https://gcc.gnu.org/wiki/GFortranBinaries).
 
 By default, `py2sambvca` expects the executable to be present in the `cwd` and named `sambvca21.exe` on Windows or `sambvca21.x` on Unix-based systems. optionally, the filepath to your executable can be specified as shown below.
 
@@ -62,6 +62,7 @@ The following parameters are optional and will be filled with default values if 
  - `path_to_sambvcax` (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()(default "sambvca.exe")
  - `working_dir` (path): Path to the working directory where the output and input files are generated (default os.getcwd())
  - `verbose` (int): 0 for no output, 1 for some output, 2 for the most output (default 1)
+ - `radii_table` (dict or str): a dictionary of atomic symbols and their radii (angstroms), or "default" for the radii used in the original implementation
 
 
 From here, running can be done stepwise or with a single function:

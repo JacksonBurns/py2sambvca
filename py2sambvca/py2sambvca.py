@@ -2,10 +2,11 @@ import subprocess
 import re
 import glob
 import os
-from typing import List
+from typing import List, Union
 from warnings import warn
 
-from py2sambvca.radii_tables import table_lookup
+from py2sambvca.radii_tables import table_lookup, format_radii_table
+
 
 class py2sambvca:
     """
@@ -29,6 +30,7 @@ class py2sambvca:
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
     working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
+    radii_table: Dictionary of atomic symbols (H, N, LI, etc.) and their radii in Angstrom, "default" (bondii/vDW radii * 1.17), or "vdw" for van Der Waals
     """
 
     def __init__(
@@ -47,7 +49,7 @@ class py2sambvca:
         path_to_sambvcax: str = "sambvca.exe",
         working_dir: str = os.getcwd(),
         verbose: int = 1,
-        radii_table: str = "default",
+        radii_table: Union[str, dict] = "default",
     ):
         """
         Wrapper class for py2sambvca functions.
@@ -70,6 +72,7 @@ class py2sambvca:
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
         working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
         verbose (int): 0 for no output, 1 for some output, 2 for the most output
+        radii_table: Dictionary of atomic symbols (H, N, LI, etc.) and their radii in Angstrom, "default" (bondii/vDW radii * 1.17), or "vdw" for van Der Waals
         """
         # if atoms are requested to be deleted, assign them and the number of them
         if atoms_to_delete_ids is not None:
@@ -117,7 +120,9 @@ class py2sambvca:
         self.octant_results = None
 
         # data table
-        self.__radii_table = table_lookup[radii_table]
+        self.__radii_table = format_radii_table(
+            table_lookup[radii_table] if type(radii_table) is str else radii_table
+        )
 
     def write_input(self):
         """
@@ -516,4 +521,3 @@ class py2sambvca:
         self.parse_output()
         self.clean_files()
         return self.total_results, self.quadrant_results, self.octant_results
-

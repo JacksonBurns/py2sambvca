@@ -108,6 +108,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.orient_Z,
             self.write_surf_files,
             self.exe_path,
+            "default",
         )
         self.assertEqual(
             self.sphere_ids,
