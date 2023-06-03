@@ -6,3 +6,5 @@ table_lookup = {
     "default": default_radii_table,
     "vdw": vdw_radii_table,
 }
+
+__all__ = ["format_radii_table", "table_lookup"]
