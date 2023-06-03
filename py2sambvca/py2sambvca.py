@@ -30,7 +30,7 @@ class py2sambvca:
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
     working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
-    radii_table: Dictionary of atomic symbols (H, N, LI, etc.) and their radii in Angstrom, "default" (bondii/vDW radii * 1.17), or "vdw" for van Der Waals
+    radii_table (dict or str): atomic symbols (ie. H, LI) and radii (Angstrom), "default" (bondii radii*1.17), or "vdw" for van Der Waals
     """
 
     def __init__(
