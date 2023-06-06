@@ -43,6 +43,6 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
-    packages=["py2sambvca"],
+    packages=["py2sambvca","py2sambvca.radii_tables"],
     include_package_data=True
 )
