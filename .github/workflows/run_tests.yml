@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Link gfortran
-        uses: modflowpy/install-gfortran-action@v1
+        uses: fortran-lang/setup-fortran@v1
       - name: Setup python
         uses: actions/setup-python@v4
         with:
