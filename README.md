@@ -27,7 +27,7 @@ pip install py2sambvca
 ### Downloading and Compiling `SambVca`
 `py2sambvca` can read and write input and output files for `SambVca` without the actual program in place, but in order to run input files you must have an executable `sambvca21.exe` (or similar) somewhere on your machine.
 
-You can download the source code [on the `SambVca` webserver](https://www.molnac.unisa.it/OMtools/sambvca2.1/download/download.html) and compile it using [`gfortran`](https://gcc.gnu.org/wiki/GFortranBinaries).
+You can download the source code [on the `SambVca` webserver](https://www.aocdweb.com/OMtools/sambvca2.1/download/download.html) and compile it using [`gfortran`](https://gcc.gnu.org/wiki/GFortranBinaries).
 
 By default, `py2sambvca` expects the executable to be present in the `cwd` and named `sambvca21.exe` on Windows or `sambvca21.x` on Unix-based systems. optionally, the filepath to your executable can be specified as shown below.
 
