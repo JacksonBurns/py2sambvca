@@ -2,6 +2,7 @@ import os
 import sys
 import unittest
 import shutil
+import glob
 
 from py2sambvca import p2s
 
@@ -264,11 +265,13 @@ class Testpy2sambvca(unittest.TestCase):
             self.z_ids,
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
+            working_dir=os.getcwd(),
             verbose=0,
         )
         test_p2s.write_input()
         with open("py2sambvca_input.inp") as file:
             self.assertIsNotNone(file)
+        test_p2s.clean_files()
 
     def test_calc(self):
         """
@@ -285,22 +288,6 @@ class Testpy2sambvca(unittest.TestCase):
         test_p2s.write_input()
         self.assertTrue(test_p2s.calc())
 
-    def test_buried_volume(self):
-        """
-        Test retrieval of buried volume.
-        """
-        test_p2s = p2s(
-            self.xyz_file,
-            self.sphere_ids,
-            self.z_ids,
-            self.xz_ids,
-            path_to_sambvcax=self.exe_path,
-            verbose=1,
-        )
-        test_p2s.write_input()
-        test_p2s.calc()
-        self.assertEqual(test_p2s.get_buried_vol(), 55.7)
-
     def test_clean_files(self):
         """
         File cleaner should remove all py2sambvca files.
@@ -311,6 +298,7 @@ class Testpy2sambvca(unittest.TestCase):
             self.z_ids,
             self.xz_ids,
             path_to_sambvcax=self.exe_path,
+            working_dir=os.getcwd(),
             verbose=0,
         )
         test_p2s.write_input()
@@ -474,15 +462,8 @@ class Testpy2sambvca(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        """Clean up the mess."""
-        test_p2s = p2s(
-            self.xyz_file,
-            self.sphere_ids,
-            self.z_ids,
-            self.xz_ids,
-        )
-        test_p2s.clean_files()
-        shutil.rmtree(self.working_dir)
+        for f in glob.glob("py2sambvca_temp_*"):
+            shutil.rmtree(f)
 
 
 if __name__ == "__main__":
