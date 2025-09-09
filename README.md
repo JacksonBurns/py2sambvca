@@ -60,9 +60,10 @@ The following parameters are optional and will be filled with default values if 
  - `orient_z` (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
  - `write_surf_files` (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
  - `path_to_sambvcax` (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()(default "sambvca.exe")
- - `working_dir` (path): Path to the working directory where the output and input files are generated (default os.getcwd())
+ - `working_dir` (path): Path to the working directory where the output and input files are generated (default py2sambvca_temp_UUID).
+ UUID is used to ensure that `py2sambvca` is threadsafe (i.e., can be run in parallel with multiprocessing or free threading).
  - `verbose` (int): 0 for no output, 1 for some output, 2 for the most output (default 1)
- - `radii_table` (dict or str): a dictionary of atomic symbols and their radii (angstroms), or "default" for the radii used in the original implementation
+ - `radii_table` (dict or str): a dictionary of atomic symbols and their radii (angstroms), "vdw" for the Van der Waals radii, or "default" for the radii used in the original implementation
 
 
 From here, running can be done stepwise or with a single function:
