@@ -2,8 +2,8 @@ import subprocess
 import re
 import glob
 import os
+import uuid
 from typing import List, Union
-from warnings import warn
 
 from py2sambvca.radii_tables import table_lookup, format_radii_table
 
@@ -28,7 +28,7 @@ class py2sambvca:
     orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
     write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
     path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
-    working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
+    working_dir (path): Path to the working directory where the output and input files are generated (default py2sambvca_temp_UUID)
     verbose (int): 0 for no output, 1 for some output, 2 for the most output
     radii_table (dict or str): atomic symbols (ie. H, LI) and radii (Angstrom), "default" (bondii radii*1.17), or "vdw" for van Der Waals
     """
@@ -47,7 +47,7 @@ class py2sambvca:
         orient_z: int = 1,
         write_surf_files: int = 1,
         path_to_sambvcax: str = "sambvca.exe",
-        working_dir: str = os.getcwd(),
+        working_dir: str = "py2sambvca_temp_UUID",
         verbose: int = 1,
         radii_table: Union[str, dict] = "default",
     ):
@@ -70,7 +70,7 @@ class py2sambvca:
         orient_z (int): 0/1 Molecule oriented along negative/positive Z-axis (default 1)
         write_surf_files (int): 0/1 Do not write/write files for top and bottom surfaces (default 1)
         path_to_sambvcax (str): Path to the SambVca executable. Only needed to use py2sambvca.calc()( default "/path/to/executable/sambvca.x")
-        working_dir (path): Path to the working directory where the output and input files are generated (default os.getcwd())
+        working_dir (path): Path to the working directory where the output and input files are generated (default py2sambvca_temp_UUID)
         verbose (int): 0 for no output, 1 for some output, 2 for the most output
         radii_table (dict or str): atomic symbols (ie. H, LI) and radii (Angstrom), "default" (bondii radii*1.17), or "vdw" for van Der Waals
         """
@@ -107,6 +107,8 @@ class py2sambvca:
         self.path_to_sambvcax = path_to_sambvcax
 
         # assign working directory path
+        if working_dir == "py2sambvca_temp_UUID":
+            working_dir = working_dir.replace("UUID", uuid.uuid4().hex)
         self.working_dir = working_dir
         if not os.path.exists(self.working_dir):
             os.makedirs(self.working_dir)
@@ -208,20 +210,6 @@ class py2sambvca:
             if self.verbose:
                 print(e)
             return False
-
-    def get_buried_vol(self):
-        """
-        Retrieves the buried volume from a SambVca output file in the current working directory
-        or False if it cannot find it.
-        """
-        warn(
-            "get_buried_vol is deprecated and will be removed in py2sambvca 2.0"
-            "Use get_buried_volume instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        m = self.get_regex(r"^[ ]{4}The %V Bur of the molecule is:[ ]{4,5}(\d*\.\d*)$")
-        return float(m[1])
 
     def clean_files(self):
         """
